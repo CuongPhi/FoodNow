@@ -1,0 +1,3 @@
+rootProject.name = 'FD_1512020'
+
+include ':app'
