@@ -21,26 +21,28 @@ export default class App extends Component {
     var { height, width } = Dimensions.get('window');
 
     return (
-      <BasketScreen />
-      // <ScrollView
-      //   nestedScrollEnabled={true}
-      // >
-      //   <View style={{ height: height }}>
-      //     <SignInScreen />
-      //   </View>
-      //   <View style={{ height: height }}>
-      //     <SignUpScreen />
-      //   </View>
-      //   <View style={{ height: height }}>
-      //     <ForgotPasswordScreen />
-      //   </View>
-      //   <View style={{ height: height }}>
-      //     <MerchanListScreen />
-      //   </View>
-      //   <View style={{ height: height }}>
-      //     <MerchantDetailsScreen />
-      //   </View>
-      // </ScrollView>
+      <ScrollView
+        nestedScrollEnabled={true}
+      >
+        <View style={{ height: height }}>
+          <SignInScreen />
+        </View>
+        <View style={{ height: height }}>
+          <SignUpScreen />
+        </View>
+        <View style={{ height: height }}>
+          <ForgotPasswordScreen />
+        </View>
+        <View style={{ height: height }}>
+          <MerchanListScreen />
+        </View>
+        <View style={{ height: height }}>
+          <MerchantDetailsScreen />
+        </View>
+        <View style={{ height: height }}>
+          <BasketScreen />
+        </View>
+      </ScrollView>
     );
   }
 }
