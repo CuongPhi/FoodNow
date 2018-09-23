@@ -7,7 +7,8 @@ PColor = {
     green_danner_tail: a=>parseColor('#74b9ff'.a),
     shy_moment: a=>parseColor('#a29bfe',a),
     pico_8_pink: a=>parseColor("#fd79a8",a),
-    soothing_breeze: a=>parseColor('#b2bec3',a)
+    soothing_breeze: a=>parseColor('#b2bec3',a),
+    electron_blue: a=>parseColor("#0984e3",a)
 };
 
 AColor = {

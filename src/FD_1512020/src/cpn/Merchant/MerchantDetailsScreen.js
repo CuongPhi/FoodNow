@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, ImageBackground, Image, SectionList } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome'
+import { Badge } from 'react-native-elements'
+
 import Color from '../../assets/color/color'
 import CStyles from '../../assets/styles/styles'
 import DishItem from './DishItem'
+
 
 let item = {
   source: 'https://media.foody.vn/res/g68/675439/s600x600/201866105610-122.jpg',
@@ -57,43 +61,27 @@ export default class MerchantDetailsScreen extends Component {
     ]
   }
   render() {
-    const { DetailLayoutContainer, DeatailLayout } = style
+    const { DetailLayoutContainer, DeatailLayout, snackbar, textBrand, textAddr, brandLayout } = style
     return (
       <View style={CStyles.main}>
         <View style={{ flex: 1, backgroundColor: Color.PColor.light_grennish_blue(1), }}>
           <Text>FoodNOW - Navigation will be here</Text>
         </View>
         <View style={DetailLayoutContainer}>
-          <View style={[DeatailLayout, CStyles.shadowBox]}>
+          <View style={[CStyles.shadowBox, DeatailLayout]}>
             <ImageBackground
               source={{ uri: 'https://vuakhuyenmai.vn/wp-content/uploads/2017/11/britea-english-tea-house-sale-16-11-2017.jpg' }}
               style={{ flex: 1, justifyContent: 'flex-end' }}
               imageStyle={{ borderTopLeftRadius: 2, borderTopRightRadius: 2 }}
             >
               <View
-                style={{
-                  height: 'auto',
-                  backgroundColor: Color.PColor.soothing_breeze(0.5),
-                }}
+                style={brandLayout}
               >
-                <Text style={{
-                  color: 'white',
-                  fontFamily: 'Montserrat',
-                  fontWeight: 'bold',
-                  fontSize: 14,
-                  padding: 5,
-                  paddingLeft: 10
-                }}>Britea - English Tea House - Ngô Đức Kế</Text>
-                <Text style={{
-                  color: 'white',
-                  fontFamily: 'Montserrat',
-                  fontSize: 12,
-                  padding: 5,
-                  paddingLeft: 10
-                }}>60 Ngô Đức Kế, P. Bến Nghé,  Quận 1, TP. HCM</Text>
+                <Text style={textBrand}>Britea - English Tea House - Ngô Đức Kế</Text>
+                <Text style={textAddr}>60 Ngô Đức Kế, P. Bến Nghé,  Quận 1, TP. HCM</Text>
               </View>
             </ImageBackground>
-            <View style={{ flex: 4 }}>
+            <View style={{ flex: 4, zIndex: 0 }}>
               <SectionList
                 sections={this.data}
                 renderItem={({ item, index, section }) => <DishItem item={item} />}
@@ -101,9 +89,24 @@ export default class MerchantDetailsScreen extends Component {
                   <Text style={{ fontWeight: 'bold', paddingLeft: 10 }}>{title}</Text>
                 )}
                 keyExtractor={(item, index) => index.toString()}
+                nestedScrollEnabled={true}
+                contentContainerStyle={{ paddingBottom: 50 }}
               />
             </View>
           </View>
+        </View>
+        <View
+          style={snackbar}
+        >
+
+          <Icon name='shopping-basket' size={20} color={Color.PColor.electron_blue(0.9)} style={{
+            textAlignVertical: 'center',
+          }} />
+          <Badge containerStyle={{ backgroundColor: Color.PColor.electron_blue(0.9),marginLeft:10 }} textStyle={{ color: 'orange' }} value={2}/>
+          <Text style={{
+            color: Color.PColor.electron_blue(0.9),
+            paddingLeft: 10
+          }}>72.000 đ</Text>
         </View>
       </View>
     );
@@ -112,7 +115,7 @@ export default class MerchantDetailsScreen extends Component {
 
 const style = StyleSheet.create({
   DetailLayoutContainer: {
-    flex: 9, padding: 10
+    flex: 9, padding: 10,
   },
   DeatailLayout: {
     backgroundColor: 'white',
@@ -120,5 +123,41 @@ const style = StyleSheet.create({
     justifyContent: 'flex-start',
     borderRadius: 2,
     paddingBottom: 2,
+    zIndex: 0
+  },
+  snackbar: {
+    width: '100%',
+    height: 40,
+    backgroundColor: 'black',
+    position: 'absolute',
+    elevation: 6,
+    opacity: .8,
+    left: 0,
+    bottom: 0,
+    flexDirection: 'row',
+    justifyContent: "flex-start",
+    alignItems: 'center',
+    padding: 10
+  },
+  textBrand: {
+    color: 'white',
+    fontFamily: 'Montserrat',
+    fontWeight: 'bold',
+    fontSize: 14,
+    padding: 5,
+    paddingLeft: 10
+  },
+  textAddr: {
+
+    color: 'white',
+    fontFamily: 'Montserrat',
+    fontSize: 12,
+    padding: 5,
+    paddingLeft: 10
+  },
+  brandLayout: {
+    height: 'auto',
+    backgroundColor: Color.PColor.soothing_breeze(0.5),
+    alignItems: 'center',
   }
 })

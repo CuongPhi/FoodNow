@@ -22,7 +22,7 @@ export default class App extends Component {
     return (
       <MerchantDetailsScreen />
       // <ScrollView
-      // nestedScrollEnabled={true}
+      //   nestedScrollEnabled={true}
       // >
       //   <View style={{ height: height }}>
       //     <SignInScreen />
@@ -35,6 +35,9 @@ export default class App extends Component {
       //   </View>
       //   <View style={{ height: height }}>
       //     <MerchanListScreen />
+      //   </View>
+      //   <View style={{ height: height }}>
+      //     <MerchantDetailsScreen />
       //   </View>
       // </ScrollView>
     );
