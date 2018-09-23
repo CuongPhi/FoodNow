@@ -13,6 +13,7 @@ import SignUpScreen from './src/cpn/SignUp/SignUpScreen'
 import ForgotPasswordScreen from './src/cpn/ForgotPassword/ForgotPasswordScreen'
 import MerchanListScreen from './src/cpn/MerchantList/MerchanListScreen'
 import MerchantDetailsScreen from './src/cpn/Merchant/MerchantDetailsScreen'
+import BasketScreen from  './src/cpn/Basket/BasketScreen'
 
 export default class App extends Component {
 
@@ -20,7 +21,7 @@ export default class App extends Component {
     var { height, width } = Dimensions.get('window');
 
     return (
-      <MerchantDetailsScreen />
+      <BasketScreen />
       // <ScrollView
       //   nestedScrollEnabled={true}
       // >

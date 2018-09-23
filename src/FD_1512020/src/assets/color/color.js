@@ -8,7 +8,9 @@ PColor = {
     shy_moment: a=>parseColor('#a29bfe',a),
     pico_8_pink: a=>parseColor("#fd79a8",a),
     soothing_breeze: a=>parseColor('#b2bec3',a),
-    electron_blue: a=>parseColor("#0984e3",a)
+    electron_blue: a=>parseColor("#0984e3",a),
+    dracula_orchid: a=>parseColor("#2d3436",a),
+    city_light: a=>parseColor("#dfe6e9",a)
 };
 
 AColor = {
