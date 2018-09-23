@@ -13,7 +13,8 @@
     "react-native-content-loader": "^0.1.6",
     "react-native-elements": "^1.0.0-beta",
     "react-native-svg": "^7.0.3",
-    "react-native-vector-icons": "^5.0.0"
+    "react-native-vector-icons": "^5.0.0",
+    "tinycolor2": "^1.4.1"
   },
   "devDependencies": {
     "babel-jest": "23.6.0",
