@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import {StyleSheet} from 'react-native';
 import Color from '../color/color'
 export default CStyles = {
