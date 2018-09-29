@@ -5,11 +5,12 @@ import {
   ImageBackground,
   StyleSheet,
   Image,
-  Text
+  Text,
+  Animated
 } from 'react-native'
-import { Actions } from 'react-native-router-flux';
-import CustomInput from '../CommonCpn/CustomInput'
-import CustomButton from '../CommonCpn/CustomButton'
+import {Actions} from 'react-native-router-flux';
+import CustomInput from '../../CommonCpn/CustomInput'
+import CustomButton from '../../CommonCpn/CustomButton'
 
 export default class SignIn extends PureComponent {
   render() {
