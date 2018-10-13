@@ -19,9 +19,9 @@ const styles = StyleSheet.create({
 export default class CustomButton extends PureComponent {
   render() {
     const { wrapper, textStyle } = styles;
-    const { style, text } = this.props;
+    const { style, text, onPress } = this.props;
     return (
-      <TouchableOpacity style={[wrapper, style]}>
+      <TouchableOpacity style={[wrapper, style]} onPress={onPress}>
         <Text style={textStyle}>{text}</Text>
       </TouchableOpacity>
     );
