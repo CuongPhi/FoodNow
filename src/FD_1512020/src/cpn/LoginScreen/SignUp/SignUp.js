@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import axios from 'axios';
 import CustomInput from '../../CommonCpn/CustomInput';
 import CustomButton from '../../CommonCpn/CustomButton';
 import * as StringUtils from '../../../Utils/StringUtils';
+import * as Dialog from '../../Modal/Dialog';
 
 const styles = StyleSheet.create({
   main: {
@@ -34,6 +35,9 @@ export default class SignUp extends PureComponent {
     this.username = undefined;
     this.password = undefined;
     this.repassword = undefined;
+    this.succesDialog = undefined;
+    this.button = undefined;
+    this.errorDialog = undefined;
     this.register = this.register.bind(this);
   }
 
@@ -43,21 +47,28 @@ export default class SignUp extends PureComponent {
     const pass = this.password.getValue();
     const repass = this.repassword.getValue();
     if (StringUtils.isEmptyOrNull(email)) {
-      Alert.alert('Error', 'Empty Email');
+      this.errorDialog.setMessage('Empty Email');
+      this.errorDialog.show();
       return;
     }
     if (!StringUtils.validateEmail(email)) {
-      Alert.alert('Error', 'Wrong Email');
+      this.errorDialog.setMessage('Wrong Email');
+      this.errorDialog.show();
       return;
     }
     if (StringUtils.isEmptyOrNull(pass)) {
-      Alert.alert('Error', 'Empty Password');
+      this.errorDialog.setMessage('Empty Password');
+      this.errorDialog.show();
       return;
     }
     if (repass !== pass) {
-      Alert.alert('Error', 'Repassword and Password are not match');
+      this.errorDialog.setMessage('Repassword and Password are not match');
+      this.errorDialog.show();
+      return;
     }
 
+    this.button.disable();
+    Keyboard.dismiss();
     axios({
       url: 'https://food-delivery-server.herokuapp.com/register',
       method: 'post',
@@ -68,15 +79,19 @@ export default class SignUp extends PureComponent {
     })
       .then(response => {
         if (response.status === 200) {
-          Alert.alert('Successfully', '', [{ text: 'OK', onPress: () => Actions.pop() }]);
+          this.succesDialog.show(() => {
+            this.button.enable();
+          });
         }
       })
       .catch(error => {
         try {
-          Alert.alert('Error', `${error.response.data.msg} (HTTP:${error.response.status})`);
+          this.errorDialog.setMessage(`${error.response.data.msg} (HTTP:${error.response.status})`);
+          this.errorDialog.show(() => this.button.enable());
         } catch (e) {
-          Alert.alert('Error', `Unknown Error`);
+          this.errorDialog.show(() => this.button.enable());
         }
+        this.button.enable();
       });
   }
 
@@ -140,7 +155,14 @@ export default class SignUp extends PureComponent {
           />
         </View>
 
-        <CustomButton style={[inputLayout, input]} text="Sign up" onPress={this.register} />
+        <CustomButton
+          style={[inputLayout, input]}
+          text="Sign up"
+          onPress={this.register}
+          ref={x => {
+            this.button = x;
+          }}
+        />
         <View style={textLayout}>
           <TouchableOpacity onPress={() => Actions.signin()}>
             <Text style={text}>Have an account already?</Text>
@@ -149,6 +171,22 @@ export default class SignUp extends PureComponent {
             <Text style={text}>Need help?</Text>
           </TouchableOpacity>
         </View>
+        <Dialog.SuccessDialog
+          ref={x => {
+            this.succesDialog = x;
+          }}
+          title="Success"
+          message="Please verify your email (3 minutes left)"
+          doneTitle="OK"
+        />
+        <Dialog.ErrorDialog
+          ref={x => {
+            this.errorDialog = x;
+          }}
+          title="Error"
+          message="Unknown Error"
+          doneTitle="OK"
+        />
       </View>
     );
   }

@@ -24,7 +24,8 @@ const PColor = {
   electron_blue: a => parseColor('#0984e3', a),
   dracula_orchid: a => parseColor('#2d3436', a),
   city_light: a => parseColor('#dfe6e9', a),
-  chigong: a=> parseColor("#d63031",a)
+  chigong: a=> parseColor("#d63031",a),
+  mint_leaf: a=>parseColor("#00b894",a)
 };
 
 const AColor = {

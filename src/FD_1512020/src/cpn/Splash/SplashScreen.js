@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react';
-import { View, ImageBackground, StyleSheet, Image } from 'react-native';
-import SignUp from './SignUp/SignUp';
-import SignIn from './SignIn/SignIn';
-import ForgotPassword from './ForgotPassword/ForgotPassword';
+import { View, ImageBackground, StyleSheet, Image, AsyncStorage } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 
 const styles = StyleSheet.create({
   main: {
@@ -28,23 +26,32 @@ const styles = StyleSheet.create({
     height: 50,
   },
 });
-export default class LoginScreen extends PureComponent {
-  static renderTypeView(params) {
-    switch (params) {
-      case 'signup':
-        return <SignUp style={{ flex: 3 }} />;
-      case 'signin':
-        return <SignIn style={{ flex: 1 }} />;
-      case 'forgotpassword':
-        return <ForgotPassword style={{ flex: 1 }} />;
-      default:
-        return <View />;
-    }
+export default class Spash extends PureComponent {
+  componentDidMount() {
+    AsyncStorage.getItem('@Token')
+      .then(value => {
+        console.log(value);
+        if (value !== null) {
+          setTimeout(() => {
+            Actions.reset('main');
+          }, 300);
+        } else {
+          setTimeout(() => {
+            Actions.reset('auth');
+          }, 300);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        setTimeout(() => {
+          Actions.reset('auth');
+        }, 300);
+      });
   }
 
   render() {
+    console.log('render');
     const { main, brand, brandWrapper } = styles;
-    const { type } = this.props;
     return (
       <ImageBackground
         source={require('../../assets/image/FD_background.jpg')}
@@ -54,7 +61,6 @@ export default class LoginScreen extends PureComponent {
         <View style={brandWrapper}>
           <Image source={require('../../assets/image/logo.png')} style={brand} />
         </View>
-        {LoginScreen.renderTypeView(type)}
       </ImageBackground>
     );
   }

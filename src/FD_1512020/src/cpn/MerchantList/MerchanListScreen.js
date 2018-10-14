@@ -1,125 +1,62 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList } from 'react-native';
-import ContentLoader from 'react-native-content-loader';
+import { View, Text, FlatList, Dimensions } from 'react-native';
 import { Circle, Rect } from 'react-native-svg';
+import axios from 'axios';
+import { Actions } from 'react-native-router-flux';
+import ContentLoader from '../ContentLoader';
 import MerchantItem from './MerchantItem';
 import Color from '../../assets/color/color';
 import CStyles from '../../assets/styles/styles';
 
+const { width, height } = Dimensions.get('window');
 export default class MerchantListScreen extends Component {
   constructor(props) {
     super(props);
-    this.itemList = [
-      {
-        name: 'Britea - English Tea House - Ngô Đức Kế',
-        address: '60 Ngô Đức Kế, P. Bến Nghé,  Quận 1, TP. HCM',
-        source: 'https://media.foody.vn/res/g68/675439/s60x60/201881814565-m1hh.jpg',
-        price: '25.000 đ - 75.000đ',
-        distance: '>3.0km',
-        duration: '56pt',
-      },
-      {
-        name: 'Ngọc Châu - Bánh Mì & Xôi Mặn',
-        address: '4 Nguyễn Thị Tần, P. 3, Quận 8, TP. HCM',
-        source:
-          'https://images.foody.vn/res/g76/754026/prof/s480x300/foody-upload-api-foody-mobile-2-jpg-180628161528.jpg',
-        price: '25.000 đ - 75.000đ',
-        distance: '>3.0km',
-        duration: '15pt',
-      },
-      {
-        name: 'A Tuấn - Cháo Ếch Singapore - Nguyễn Hữu Thọ',
-        address: '77 Nguyễn Hữu Thọ,  Quận 7, TP. HCM',
-        source:
-          'https://images.foody.vn/res/g76/750814/prof/s576x330/foody-upload-api-foody-mobile-foody-mobile-ce3-jpg-180615134706.jpg',
-        price: '25.000 đ - 75.000đ',
-        distance: '>3.0km',
-        duration: '56pt',
-      },
-      {
-        name: 'Britea - English Tea House - Ngô Đức Kế',
-        address: '60 Ngô Đức Kế, P. Bến Nghé,  Quận 1, TP. HCM',
-        source: 'https://media.foody.vn/res/g68/675439/s60x60/201881814565-m1hh.jpg',
-        price: '25.000 đ - 75.000đ',
-        distance: '>3.0km',
-        duration: '56pt',
-      },
-      {
-        name: 'Ngọc Châu - Bánh Mì & Xôi Mặn',
-        address: '4 Nguyễn Thị Tần, P. 3, Quận 8, TP. HCM',
-        source:
-          'https://images.foody.vn/res/g76/754026/prof/s480x300/foody-upload-api-foody-mobile-2-jpg-180628161528.jpg',
-        price: '25.000 đ - 75.000đ',
-        distance: '>3.0km',
-        duration: '15pt',
-      },
-      {
-        name: 'A Tuấn - Cháo Ếch Singapore - Nguyễn Hữu Thọ',
-        address: '77 Nguyễn Hữu Thọ,  Quận 7, TP. HCM',
-        source:
-          'https://images.foody.vn/res/g76/750814/prof/s576x330/foody-upload-api-foody-mobile-foody-mobile-ce3-jpg-180615134706.jpg',
-        price: '25.000 đ - 75.000đ',
-        distance: '>3.0km',
-        duration: '56pt',
-      },
-      {
-        name: 'Britea - English Tea House - Ngô Đức Kế',
-        address: '60 Ngô Đức Kế, P. Bến Nghé,  Quận 1, TP. HCM',
-        source: 'https://media.foody.vn/res/g68/675439/s60x60/201881814565-m1hh.jpg',
-        price: '25.000 đ - 75.000đ',
-        distance: '>3.0km',
-        duration: '56pt',
-      },
-      {
-        name: 'Ngọc Châu - Bánh Mì & Xôi Mặn',
-        address: '4 Nguyễn Thị Tần, P. 3, Quận 8, TP. HCM',
-        source:
-          'https://images.foody.vn/res/g76/754026/prof/s480x300/foody-upload-api-foody-mobile-2-jpg-180628161528.jpg',
-        price: '25.000 đ - 75.000đ',
-        distance: '>3.0km',
-        duration: '15pt',
-      },
-      {
-        name: 'A Tuấn - Cháo Ếch Singapore - Nguyễn Hữu Thọ',
-        address: '77 Nguyễn Hữu Thọ,  Quận 7, TP. HCM',
-        source:
-          'https://images.foody.vn/res/g76/750814/prof/s576x330/foody-upload-api-foody-mobile-foody-mobile-ce3-jpg-180615134706.jpg',
-        price: '25.000 đ - 75.000đ',
-        distance: '>3.0km',
-        duration: '56pt',
-      },
-      {
-        name: 'Britea - English Tea House - Ngô Đức Kế',
-        address: '60 Ngô Đức Kế, P. Bến Nghé,  Quận 1, TP. HCM',
-        source: 'https://media.foody.vn/res/g68/675439/s60x60/201881814565-m1hh.jpg',
-        price: '25.000 đ - 75.000đ',
-        distance: '>3.0km',
-        duration: '56pt',
-      },
-      {
-        name: 'Ngọc Châu - Bánh Mì & Xôi Mặn',
-        address: '4 Nguyễn Thị Tần, P. 3, Quận 8, TP. HCM',
-        source:
-          'https://images.foody.vn/res/g76/754026/prof/s480x300/foody-upload-api-foody-mobile-2-jpg-180628161528.jpg',
-        price: '25.000 đ - 75.000đ',
-        distance: '>3.0km',
-        duration: '15pt',
-      },
-      {
-        name: 'A Tuấn - Cháo Ếch Singapore - Nguyễn Hữu Thọ',
-        address: '77 Nguyễn Hữu Thọ,  Quận 7, TP. HCM',
-        source:
-          'https://images.foody.vn/res/g76/750814/prof/s576x330/foody-upload-api-foody-mobile-foody-mobile-ce3-jpg-180615134706.jpg',
-        price: '25.000 đ - 75.000đ',
-        distance: '>3.0km',
-        duration: '56pt',
-      },
-      {},
-    ];
+    this.state = {
+      itemList: [],
+      page: 1,
+    };
+    this.count = Math.floor(height / 100);
+    this.getListItem = this.getListItem.bind(this);
+  }
+
+  componentWillMount() {
+    this.getListItem();
+  }
+
+  getListItem() {
+    const { itemList, page } = this.state;
+    console.log(page);
+    axios({
+      url: `https://food-delivery-server.herokuapp.com/restaurant/getAll/${this.count}&${page}`,
+      method: 'get',
+    })
+      .then(res => {
+        console.log(res.data.data);
+        if (res.status === 200) {
+          try {
+            this.setState({
+              itemList: [...itemList, ...res.data.data],
+              page: page + 1,
+            });
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 
   render() {
     const { main } = CStyles;
+    const { itemList } = this.state;
+    const payments = [];
+
+    for (let i = 0; i < this.count; i += 1) {
+      payments.push(<Loader key={i} />);
+    }
     return (
       <View style={main}>
         <View style={{ flex: 1, backgroundColor: Color.PColor.light_grennish_blue(1) }}>
@@ -127,29 +64,18 @@ export default class MerchantListScreen extends Component {
         </View>
         <View style={{ flex: 9 }}>
           <FlatList
-            data={this.itemList}
-            renderItem={({ item }) => {
-              if (item.name != null) {
-                return <MerchantItem item={item} />;
-              }
-              return <Loader />;
-            }}
+            data={itemList}
+            renderItem={({ item }) => <MerchantItem item={item.info} />}
             keyExtractor={(item, index) => index.toString()}
             style={{ backgroundColor: '#fff', marginVertical: 10 }}
-            nestedScrollEnabled
+            ListEmptyComponent={<View>{payments}</View>}
+            onEndReached={() => this.getListItem()}
           />
         </View>
       </View>
     );
   }
 }
-
-// const style = StyleSheet.create({
-//   main: {
-//     flex: 1,
-//     backgroundColor: '#fab1a0'
-//   }
-// })
 
 const Loader = () => (
   <ContentLoader height={100} duration={1000}>
