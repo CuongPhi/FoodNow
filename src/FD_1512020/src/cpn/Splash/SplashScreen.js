@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, ImageBackground, StyleSheet, Image, AsyncStorage } from 'react-native';
+import { View, ImageBackground, StyleSheet, Image, AsyncStorage, StatusBar } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 
 const styles = StyleSheet.create({
@@ -58,6 +58,7 @@ export default class Spash extends PureComponent {
         style={main}
         blurRadius={0.5}
       >
+        <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
         <View style={brandWrapper}>
           <Image source={require('../../assets/image/logo.png')} style={brand} />
         </View>

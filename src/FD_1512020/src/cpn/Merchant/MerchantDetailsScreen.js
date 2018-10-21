@@ -55,13 +55,6 @@ const style = StyleSheet.create({
     alignItems: 'center',
   },
 });
-// const item = {
-//   source: 'https://media.foody.vn/res/g68/675439/s600x600/201866105610-122.jpg',
-//   name: 'Sữa Tươi Trân Châu Đường Nâu Classic - Size Prince',
-//   hint: 'Hổng thích để đá',
-//   price: '42.000 đ',
-//   sale: '20.000đ',
-// };
 
 export default class MerchantDetailsScreen extends Component {
   constructor(props) {

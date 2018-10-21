@@ -57,31 +57,6 @@ export default class MerchantItem extends Component {
   render() {
     const { main, image, infoLayout, textName, tagLayout } = styles;
     const { item } = this;
-    console.log(item);
-    // return (
-    //   <View style={main}>
-    //     <Image source={{ uri: item.source }} style={image} />
-    //     <View style={infoLayout}>
-    //       <Text style={textName} ellipsizeMode="tail" numberOfLines={1}>
-    //         {item.name}
-    //       </Text>
-    //       <Text style={textAddr} ellipsizeMode="tail" numberOfLines={1}>
-    //         {item.address}
-    //       </Text>
-    //       <View style={tagLayout}>
-    //         <Icon name="tag" color="#2d3436" />
-    //         <Text style={textTag}>{item.price}</Text>
-    //       </View>
-    //     </View>
-    //     <View style={distanceLayout}>
-    //       <Text style={{ fontSize: 10 }}>{item.distance}</Text>
-    //       <View style={tagLayout}>
-    //         <Icon name="clock-o" color="#2d3436" />
-    //         <Text style={{ fontSize: 12, marginLeft: 2 }}>{item.duration}</Text>
-    //       </View>
-    //     </View>
-    //   </View>
-    // );
     return (
       <View style={main}>
         <Image source={{ uri: item.image }} style={image} />
