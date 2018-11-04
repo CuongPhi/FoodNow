@@ -1,10 +1,14 @@
 import React, { PureComponent } from 'react';
 import { View, StyleSheet, Text, Alert } from 'react-native';
-import axios from 'axios';
 import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import CustomInput from '../../CommonCpn/CustomInput';
 import CustomButton from '../../CommonCpn/CustomButton';
-import * as StringUtils from '../../../Utils/StringUtils';
+import * as StringUtils from '../../../ultilies/StringUtils';
+import * as ApiActions from '../../../feature/apiSignIn/action';
+import * as types from '../../../feature/apiSignIn/type';
+import * as Dialog from '../../Modal/Dialog';
 
 const styles = StyleSheet.create({
   main: {
@@ -30,14 +34,37 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
 });
-export default class ForgotPassword extends PureComponent {
+class ForgotPassword extends PureComponent {
   constructor(props) {
     super(props);
     this.username = undefined;
     this.resend = this.resend.bind(this);
+    this.errorDialog = undefined;
+    this.succesDialog = undefined;
+  }
+
+  componentDidUpdate() {
+    const { apiSignIn } = this.props;
+    if (apiSignIn.type !== types.FORGOT_PASSWORD) return;
+    if (apiSignIn.loading) {
+      this.button.disable();
+    } else {
+      this.button.enable();
+    }
+    if (apiSignIn.error) {
+      this.errorDialog.setMessage(`${apiSignIn.error.data.msg} (HTTP:${apiSignIn.error.status})`);
+      this.errorDialog.show();
+    }
+    if (apiSignIn.data && apiSignIn.isSuccess) {
+      this.succesDialog.setMessage(apiSignIn.data.msg);
+      this.succesDialog.show(() => {
+        Actions.signin();
+      });
+    }
   }
 
   resend() {
+    const { actions } = this.props;
     if (!this.username) return;
     const email = this.username.getValue();
 
@@ -47,35 +74,9 @@ export default class ForgotPassword extends PureComponent {
     }
     if (!StringUtils.validateEmail(email)) {
       Alert.alert('Error', 'Wrong Email');
+      return;
     }
-    console.log('send');
-    axios({
-      url: 'https://food-delivery-server.herokuapp.com/forgetPassword',
-      method: 'post',
-      data: {
-        email,
-      },
-    })
-      .then(response => {
-        if (response.status === 200) {
-          if (response.status === 200) {
-            try {
-              Alert.alert('Successfully', response.data.msg, [
-                { text: 'OK', onPress: () => Actions.signin() },
-              ]);
-            } catch (error) {
-              Alert.alert('Successfully', '', [{ text: 'OK', onPress: () => Actions.signin() }]);
-            }
-          }
-        }
-      })
-      .catch(error => {
-        try {
-          Alert.alert('Error', `${error.response.data.msg} (HTTP:${error.response.status})`);
-        } catch (e) {
-          Alert.alert('Error', `Unknown Error`);
-        }
-      });
+    actions.forgotPassword(email);
   }
 
   render() {
@@ -102,8 +103,42 @@ export default class ForgotPassword extends PureComponent {
             }}
           />
         </View>
-        <CustomButton onPress={this.resend} style={[inputLayout, input]} text="Reset Password" />
+        <CustomButton
+          onPress={this.resend}
+          style={[inputLayout, input]}
+          text="Reset Password"
+          ref={x => {
+            this.button = x;
+          }}
+        />
+        <Dialog.ErrorDialog
+          ref={x => {
+            this.errorDialog = x;
+          }}
+          title="Error"
+          message="Unknown Error"
+          doneTitle="OK"
+        />
+        <Dialog.SuccessDialog
+          ref={x => {
+            this.succesDialog = x;
+          }}
+          title="Successfully"
+          message="Please verify your email (3 minutes left)"
+          doneTitle="OK"
+        />
       </View>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  apiSignIn: state.apiSignIn,
+});
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(ApiActions, dispatch),
+});
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ForgotPassword);

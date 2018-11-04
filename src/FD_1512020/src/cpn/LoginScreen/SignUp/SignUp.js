@@ -1,11 +1,14 @@
 import React, { PureComponent } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
 import { Actions } from 'react-native-router-flux';
-import axios from 'axios';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import CustomInput from '../../CommonCpn/CustomInput';
 import CustomButton from '../../CommonCpn/CustomButton';
-import * as StringUtils from '../../../Utils/StringUtils';
+import * as StringUtils from '../../../ultilies/StringUtils';
 import * as Dialog from '../../Modal/Dialog';
+import * as ApiActions from '../../../feature/apiSignIn/action';
+import * as types from '../../../feature/apiSignIn/type';
 
 const styles = StyleSheet.create({
   main: {
@@ -29,7 +32,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class SignUp extends PureComponent {
+class SignUp extends PureComponent {
   constructor(props) {
     super(props);
     this.username = undefined;
@@ -41,7 +44,27 @@ export default class SignUp extends PureComponent {
     this.register = this.register.bind(this);
   }
 
+  componentDidUpdate() {
+    const { apiSignIn } = this.props;
+    if (apiSignIn.type !== types.SIGN_UP) return;
+    if (apiSignIn.loading) {
+      this.button.disable();
+    } else {
+      this.button.enable();
+    }
+    if (apiSignIn.error) {
+      this.errorDialog.setMessage(`${apiSignIn.error.data.msg} (HTTP:${apiSignIn.error.status})`);
+      this.errorDialog.show();
+    }
+    if (apiSignIn.data && apiSignIn.isSuccess) {
+      this.succesDialog.show(() => {
+        this.button.enable();
+      });
+    }
+  }
+
   register() {
+    const { actions } = this.props;
     if (!this.username || !this.password || !this.repassword) return;
     const email = this.username.getValue();
     const pass = this.password.getValue();
@@ -66,33 +89,8 @@ export default class SignUp extends PureComponent {
       this.errorDialog.show();
       return;
     }
-
-    this.button.disable();
     Keyboard.dismiss();
-    axios({
-      url: 'https://food-delivery-server.herokuapp.com/register',
-      method: 'post',
-      data: {
-        email,
-        password: pass,
-      },
-    })
-      .then(response => {
-        if (response.status === 200) {
-          this.succesDialog.show(() => {
-            this.button.enable();
-          });
-        }
-      })
-      .catch(error => {
-        try {
-          this.errorDialog.setMessage(`${error.response.data.msg} (HTTP:${error.response.status})`);
-          this.errorDialog.show(() => this.button.enable());
-        } catch (e) {
-          this.errorDialog.show(() => this.button.enable());
-        }
-        this.button.enable();
-      });
+    actions.signUp(email, pass);
   }
 
   render() {
@@ -191,3 +189,14 @@ export default class SignUp extends PureComponent {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  apiSignIn: state.apiSignIn,
+});
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(ApiActions, dispatch),
+});
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SignUp);

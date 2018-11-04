@@ -1,6 +1,24 @@
+/*
+ * @Author: An Nguyen 
+ * @Date: 2018-11-05 01:02:47 
+ * @Last Modified by:   An Nguyen 
+ * @Last Modified time: 2018-11-05 01:02:47 
+ */
 import React, { PureComponent } from 'react';
-import { View, ImageBackground, StyleSheet, Image, AsyncStorage, StatusBar } from 'react-native';
+import {
+  View,
+  ImageBackground,
+  StyleSheet,
+  Image,
+  AsyncStorage,
+  StatusBar,
+  NetInfo,
+} from 'react-native';
 import { Actions } from 'react-native-router-flux';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import * as InfoActions from '../../feature/info/action';
 
 const styles = StyleSheet.create({
   main: {
@@ -26,31 +44,40 @@ const styles = StyleSheet.create({
     height: 50,
   },
 });
-export default class Spash extends PureComponent {
+class Spash extends PureComponent {
   componentDidMount() {
-    AsyncStorage.getItem('@Token')
-      .then(value => {
-        console.log(value);
-        if (value !== null) {
-          setTimeout(() => {
-            Actions.reset('main');
-          }, 300);
-        } else {
+    const { actions } = this.props;
+    NetInfo.isConnected.fetch().then(isConnected => {
+      actions.netConnection(isConnected);
+    });
+  }
+
+  componentDidUpdate() {
+    const { info } = this.props;
+    if (info.isConnected) {
+      AsyncStorage.getItem('@Token')
+        .then(value => {
+          console.log(value);
+          if (value !== null) {
+            setTimeout(() => {
+              Actions.reset('main');
+            }, 300);
+          } else {
+            setTimeout(() => {
+              Actions.reset('auth');
+            }, 300);
+          }
+        })
+        .catch(err => {
+          console.error(err);
           setTimeout(() => {
             Actions.reset('auth');
           }, 300);
-        }
-      })
-      .catch(err => {
-        console.log(err);
-        setTimeout(() => {
-          Actions.reset('auth');
-        }, 300);
-      });
+        });
+    }
   }
 
   render() {
-    console.log('render');
     const { main, brand, brandWrapper } = styles;
     return (
       <ImageBackground
@@ -66,3 +93,14 @@ export default class Spash extends PureComponent {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  info: state.info,
+});
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(InfoActions, dispatch),
+});
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Spash);

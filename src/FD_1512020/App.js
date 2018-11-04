@@ -1,14 +1,15 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
+/*
+ * @Author: An Nguyen 
+ * @Date: 2018-11-04 17:22:02 
+ * @Last Modified by: An Nguyen
+ * @Last Modified time: 2018-11-04 18:15:16
  */
 /* eslint-disable */
 import React, { PureComponent } from "react";
-import { Dimensions, Text, Image, View } from "react-native";
+import { Dimensions, Text, Image, View, NetInfo } from "react-native";
 import { Router, Scene, Stack, ActionConst, Actions, Tabs } from "react-native-router-flux";
+import { Provider, connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import LoginScreen from "./src/cpn/LoginScreen/LoginScreen";
 import MerchanListScreen from "./src/cpn/MerchantList/MerchanListScreen";
@@ -18,8 +19,13 @@ import Splash from "./src/cpn/Splash/SplashScreen";
 import CategoryListScreen from "./src/cpn/CategoryList/CategoryListScreen";
 import UserScreen from './src/cpn/UserScreen/UserScreen';
 
+import * as Dialog from './src/cpn/Modal/Dialog'
 import DeliveryButton from './src/cpn/NavBar/DeliveryButton';
 import Color from './src/assets/color/color';
+
+import store from './src/store';
+
+import BaseApp from './src/app'
 
 const storeUri = require('./src/assets/image/store.png');
 const storeTintUri = require('./src/assets/image/store_disable.png')
@@ -49,82 +55,15 @@ function TabIcon(props) {
   );
 }
 
+const ConnectedRouter = connect()(Router)
+
 
 export default class App extends PureComponent {
   render() {
-    const { height, width } = Dimensions.get("window");
-
-    return (
-      <Router>
-        <Scene key="root" hideNavBar="true">
-          <Scene key="splash" component={() => <Splash />} initial />
-          <Scene key="auth" hideNavBar="true">
-            <Scene
-              key="signin"
-              component={() => <LoginScreen type="signin" />}
-              title="Sign In"
-              initial
-            />
-            <Scene
-              key="signup"
-              component={() => <LoginScreen type="signup" />}
-              title="Sign Up"
-            />
-            <Scene
-              key="forgotpassword"
-              component={() => <LoginScreen type="forgotpassword" />}
-              title="Forgot Password"
-            />
-          </Scene>
-          <Tabs key="main"
-            onBack={() => {
-              init = "true"
-            }}
-            navigationBarStyle={{
-              backgroundColor: Color.AColor.main,
-            }}
-            titleStyle={{
-              color: 'white'
-            }}
-            tabStyle={{
-              backgroundColor: Color.PColor.pico_8_pink(0.8),
-            }}
-            showLabel={false}
-            tabBarPosition='bottom'
-          >
-            <Scene
-              key="merchantlist"
-              component={() => <MerchanListScreen />}
-              title="Merchant List"
-              onBack={() => {
-                console.log('back')
-                Actions.refresh()
-              }}
-              renderTitle={<DeliveryButton location='' />}
-              iconUri={storeUri}
-              iconTintUri={storeTintUri}
-              icon={TabIcon}
-            />
-            <Scene
-              key="categorylist"
-              component={() => <CategoryListScreen />}
-              title="Category"
-              renderTitle={<DeliveryButton location='' />}
-              iconUri={categoryUri}
-              iconTintUri={categoryTintUri}
-              icon={TabIcon}
-            />
-            <Scene
-              key="userscreen"
-              component={() => <UserScreen />}
-              title="Forgot Password"
-              iconUri={userUri}
-              iconTintUri={userTintUri}
-              icon={TabIcon}
-            />
-          </Tabs>
-        </Scene>
-      </Router>
+     return (
+      <Provider store={store} >
+        <BaseApp />
+      </Provider>
     );
   }
 }

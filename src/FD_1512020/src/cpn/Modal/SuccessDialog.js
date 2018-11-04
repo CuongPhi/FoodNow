@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, PixelRatio, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import Modal from 'react-native-modal';
 
 export default class SuccessDialog extends Component {
@@ -42,35 +42,35 @@ export default class SuccessDialog extends Component {
       <Modal isVisible={isShow}>
         <View
           style={{
-            width: PixelRatio.get() * 70,
-            borderRadius: PixelRatio.get() * 1,
+            width: 280,
+            borderRadius: 8,
             backgroundColor: 'white',
             alignSelf: 'center',
             justifyContent: 'center',
             alignItems: 'center',
-            padding: PixelRatio.get() * 2,
+            padding: 10,
           }}
         >
           <Image
             source={require('../../assets/image/checked.png')}
             style={{
-              width: PixelRatio.get() * 20,
-              height: PixelRatio.get() * 20,
+              width: 60,
+              height: 60,
               resizeMode: 'contain',
             }}
           />
           <Text
             style={{
               fontWeight: '200',
-              fontSize: 28 / PixelRatio.getFontScale(),
+              fontSize: 28,
             }}
           >
             {title}
           </Text>
           <Text
             style={{
-              fontSize: 16 / PixelRatio.getFontScale(),
-              padding: PixelRatio.get() * 2,
+              fontSize: 16,
+              padding: 10,
             }}
           >
             {message}
@@ -79,9 +79,9 @@ export default class SuccessDialog extends Component {
             onPress={this.hide}
             style={{
               width: '80%',
-              padding: PixelRatio.get() * 2,
-              backgroundColor: '#5def7d',
-              borderRadius: PixelRatio.get() * 1,
+              padding: 5,
+              backgroundColor: '#32BA7C',
+              borderRadius: 10,
               justifyContent: 'center',
               alignItems: 'center',
             }}

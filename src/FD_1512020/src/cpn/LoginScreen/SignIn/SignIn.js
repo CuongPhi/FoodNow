@@ -1,11 +1,21 @@
+/*
+ * @Author: An Nguyen 
+ * @Date: 2018-11-04 14:57:19 
+ * @Last Modified by: An Nguyen
+ * @Last Modified time: 2018-11-05 01:36:40
+ */
 import React, { PureComponent } from 'react';
-import { View, TouchableOpacity, StyleSheet, Text, Keyboard, AsyncStorage } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Text, Keyboard } from 'react-native';
 import { Actions } from 'react-native-router-flux';
-import axios from 'axios';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import CustomInput from '../../CommonCpn/CustomInput';
 import CustomButton from '../../CommonCpn/CustomButton';
-import * as StringUtils from '../../../Utils/StringUtils';
+import * as StringUtils from '../../../ultilies/StringUtils';
+import * as Utils from '../../../ultilies/Utils';
 import * as Dialog from '../../Modal/Dialog';
+import * as ApiActions from '../../../feature/apiSignIn/action';
+import * as types from '../../../feature/apiSignIn/type';
 
 const styles = StyleSheet.create({
   main: {
@@ -28,15 +38,7 @@ const styles = StyleSheet.create({
     width: '80%',
   },
 });
-export default class SignIn extends PureComponent {
-  static async storeData(key, item) {
-    try {
-      await AsyncStorage.setItem(key, item);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
+class SignIn extends PureComponent {
   constructor(props) {
     super(props);
     this.username = undefined;
@@ -46,7 +48,26 @@ export default class SignIn extends PureComponent {
     this.signin = this.signin.bind(this);
   }
 
+  componentDidUpdate() {
+    const { apiSignIn } = this.props;
+    if (apiSignIn.type !== types.SIGN_IN) return;
+    if (apiSignIn.loading) {
+      this.button.disable();
+    } else {
+      this.button.enable();
+    }
+    if (apiSignIn.error) {
+      this.errorDialog.setMessage(`${apiSignIn.error.data.msg} (HTTP:${apiSignIn.error.status})`);
+      this.errorDialog.show();
+    }
+    if (apiSignIn.data && apiSignIn.isSuccess) {
+      Utils.storeItem('@Token', apiSignIn.data.token).catch(err => console.log(err));
+      Actions.main();
+    }
+  }
+
   signin() {
+    const { actions } = this.props;
     if (!this.username || !this.password) return;
     const email = this.username.getValue();
     const pass = this.password.getValue();
@@ -65,41 +86,13 @@ export default class SignIn extends PureComponent {
       this.errorDialog.show();
       return;
     }
-    this.button.disable();
     Keyboard.dismiss();
-    axios({
-      url: 'https://food-delivery-server.herokuapp.com/login',
-      method: 'post',
-      data: {
-        email,
-        password: pass,
-      },
-    })
-      .then(response => {
-        if (response.status === 200) {
-          try {
-            console.log(response.data);
-            SignIn.storeData('@Token', response.data.token);
-          } catch (error) {
-            console.log(error);
-          }
-          Actions.main();
-        }
-      })
-      .catch(error => {
-        try {
-          this.errorDialog.setMessage(`${error.response.data.msg} (HTTP:${error.response.status})`);
-          this.errorDialog.show();
-        } catch (e) {
-          this.errorDialog.show();
-        }
-        this.button.enable();
-      });
+    actions.signIn(email, pass);
   }
 
   render() {
     const { main, inputLayout, input, text, textLayout } = styles;
-    const { style } = this.props;
+    const { style, loading } = this.props;
     return (
       <View style={[main, style]}>
         <View style={inputLayout}>
@@ -145,7 +138,7 @@ export default class SignIn extends PureComponent {
           ref={x => {
             this.button = x;
           }}
-          disabled={false}
+          disabled={loading}
           style={[inputLayout, input]}
           text="Sign in"
         />
@@ -170,3 +163,14 @@ export default class SignIn extends PureComponent {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  apiSignIn: state.apiSignIn,
+});
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(ApiActions, dispatch),
+});
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SignIn);

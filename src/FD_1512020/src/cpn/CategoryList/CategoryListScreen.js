@@ -1,9 +1,31 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, SectionList } from 'react-native';
+import { View, Text, FlatList, SectionList, StyleSheet } from 'react-native';
 import axios from 'axios';
-import { TagSelect } from 'react-native-tag-select';
 import * as Progress from 'react-native-progress';
+import _ from 'lodash';
 import Color from '../../assets/color/color';
+import TagSelect from '../CommonCpn/TagSelect';
+
+const styles = StyleSheet.create({
+  title: {
+    fontSize: 20,
+    paddingHorizontal: 10,
+    paddingTop: 10,
+  },
+  category: {
+    backgroundColor: 'white',
+    margin: 5,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    marginTop: 10,
+  },
+  foods: {
+    backgroundColor: 'white',
+    margin: 5,
+    borderBottomRightRadius: 8,
+    borderBottomLeftRadius: 8,
+  },
+});
 
 export default class CategoryListScreen extends Component {
   constructor(props) {
@@ -12,8 +34,11 @@ export default class CategoryListScreen extends Component {
       isLoading: true,
       categoriesData: [],
       foodData: [],
-      selectCategories: [],
+      listData: [],
     };
+    this.category = undefined;
+    this.getFoodList = this.getFoodList.bind(this);
+    this.removeFoodList = this.removeFoodList.bind(this);
   }
 
   componentWillMount() {
@@ -24,10 +49,15 @@ export default class CategoryListScreen extends Component {
       .then(res => {
         if (res.status === 200) {
           try {
-            this.setState({
-              categoriesData: res.data,
-              isLoading: false,
-            });
+            this.setState(
+              {
+                categoriesData: res.data,
+                isLoading: false,
+              },
+              () => {
+                this.category.setSelect(res.data.length > 0 ? 1 : 0);
+              }
+            );
           } catch (error) {
             console.log(error);
           }
@@ -38,7 +68,42 @@ export default class CategoryListScreen extends Component {
       });
   }
 
-  getFoodList(item) {}
+  getFoodList(item) {
+    const { listData } = this.state;
+    axios({
+      url: `http://food-delivery-server.herokuapp.com/food/searchtype?categoryname=${item}`,
+      method: 'get',
+    })
+      .then(res => {
+        if (res.status === 200) {
+          try {
+            const obj = {
+              name: item,
+              data: res.data,
+            };
+            const list = listData;
+            list.push(obj);
+            const foodData = _.flatten(_.map(list, 'data'));
+            console.log(foodData.length);
+            this.setState({ listData: list, foodData });
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  removeFoodList(item) {
+    const { listData } = this.state;
+    const list = listData;
+    const foodData = [];
+    _.remove(list, i => i.name === item);
+    listData.forEach(e => foodData.push(e.data));
+    this.setState({ listData: list, foodData });
+  }
 
   renderLoading() {
     const { isLoading } = this.state;
@@ -49,6 +114,7 @@ export default class CategoryListScreen extends Component {
         indeterminate
         style={{
           backgroundColor: '#fff',
+          marginTop: 10,
         }}
         borderWidth={0}
       />
@@ -59,14 +125,32 @@ export default class CategoryListScreen extends Component {
     const { categoriesData } = this.state;
     return (
       <TagSelect
+        ref={x => {
+          this.category = x;
+        }}
         data={categoriesData}
         labelAttr="name"
         containerStyle={{
-          backgroundColor: Color.AColor.main,
           padding: 10,
         }}
-        onItemPress={item => {
-          console.log(item);
+        itemStyle={{
+          backgroundColor: 'white',
+          borderWidth: 2,
+          borderColor: Color.AColor.main,
+        }}
+        itemLabelStyle={{
+          color: Color.AColor.main,
+        }}
+        itemStyleSelected={{
+          backgroundColor: Color.AColor.main,
+          borderWidth: 0,
+        }}
+        onItemPress={(item, isDelete) => {
+          if (isDelete) {
+            this.removeFoodList(item.name);
+            return;
+          }
+          this.getFoodList(item.name);
         }}
       />
     );
@@ -74,11 +158,16 @@ export default class CategoryListScreen extends Component {
 
   render() {
     const { isLoading } = this.state;
+    const { title, category, foods } = styles;
     return (
       <View>
-        <Text>Categories</Text>
-        {isLoading ? this.renderLoading() : this.renderTags()}
-        <Text>Foods</Text>
+        <View style={category}>
+          <Text style={title}>Categories</Text>
+          {isLoading ? this.renderLoading() : this.renderTags()}
+        </View>
+        <View style={foods}>
+          <Text style={title}>Foods</Text>
+        </View>
       </View>
     );
   }
