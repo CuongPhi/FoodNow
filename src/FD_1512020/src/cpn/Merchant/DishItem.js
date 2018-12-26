@@ -22,6 +22,13 @@ const styles = StyleSheet.create({
   },
 });
 
+// 12-26 22:57:13.248 18215 24868 I ReactNativeJS:         { id: 1306,
+// 12-26 22:57:13.248 18215 24868 I ReactNativeJS:           name: 'Pizza Hải sản cao cấp (Size nhỏ)',
+// 12-26 22:57:13.248 18215 24868 I ReactNativeJS:           idFoodCategory: 6,
+// 12-26 22:57:13.248 18215 24868 I ReactNativeJS:           idRestaurant: 13,
+// 12-26 22:57:13.248 18215 24868 I ReactNativeJS:           image: 'http://a9.vietbao.vn/images/vn899/120/2018/04/20180419-huong-vi-bien-ca-trong-pizza-vien-tom-nuong-hai-san-cao-cap-1.jpg',
+// 12-26 22:57:13.248 18215 24868 I ReactNativeJS:           price: 265000,
+// 12-26 22:57:13.248 18215 24868 I ReactNativeJS:           sold: 130 }
 export default class DishItem extends PureComponent {
   render() {
     const { textName, textDes, textTag } = styles;
@@ -39,7 +46,7 @@ export default class DishItem extends PureComponent {
           ]}
         >
           <Image
-            source={{ uri: item.source }}
+            source={{ uri: item.image }}
             style={[
               CStyles.listItemThumbnail,
               {
@@ -51,7 +58,7 @@ export default class DishItem extends PureComponent {
           />
           <View style={CStyles.listItem2ndLayout}>
             <Text style={textName}>{item.name}</Text>
-            <Text style={textDes}>{item.hint}</Text>
+            <Text style={textDes}>{item.sold}</Text>
             <Text style={textTag}>{item.price}</Text>
           </View>
           <View

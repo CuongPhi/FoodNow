@@ -2,22 +2,25 @@
  * @Author: An Nguyen 
  * @Date: 2018-11-04 18:11:35 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2018-11-05 00:05:43
+ * @Last Modified time: 2018-12-25 00:44:53
  */
 /*eslint-disable*/
 import React, { PureComponent } from 'react';
 import { Dimensions, Text, Image, View, NetInfo } from 'react-native';
-import { Router, Scene, Stack, ActionConst, Actions, Tabs } from 'react-native-router-flux';
+import { Router, Scene, Stack, ActionConst, Actions, Tabs, Animations } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import LoginScreen from './cpn/LoginScreen/LoginScreen';
 import MerchanListScreen from './cpn/MerchantList/MerchanListScreen';
-import MerchantDetailsScreen from './cpn/Merchant/MerchantDetailsScreen';
 import BasketScreen from './cpn/Basket/BasketScreen';
 import Splash from './cpn/Splash/SplashScreen';
 import CategoryListScreen from './cpn/CategoryList/CategoryListScreen';
 import UserScreen from './cpn/UserScreen/UserScreen';
+import NearMeScreen from './cpn/NearMe/NearMeScreen';
+import NotificationsScreen from './cpn/NotificationsScreen/NotificationsScreen';
+import MerchantDetailsScreen from './cpn/Merchant/MerchantDetailsScreen';
+import {ajax} from 'rxjs/ajax';
 
 import * as InfoActions from './feature/info/action';
 import * as Dialog from './cpn/Modal/Dialog';
@@ -32,6 +35,9 @@ const categoryUri = require('./assets/image/category.png');
 const categoryTintUri = require('./assets/image/category_disable.png');
 const userUri = require('./assets/image/user.png');
 const userTintUri = require('./assets/image/user_disable.png');
+const notifUri = require('./assets/image/notification.png');
+const notifTintUri = require('./assets/image/notification_disable.png');
+
 
 function TabIcon(props) {
     const { focused, iconUri, iconTintUri } = props;
@@ -50,7 +56,7 @@ function TabIcon(props) {
                     : {}
             }
         >
-            <Image source={focused ? iconUri : iconTintUri} style={{ width: 22, height: 25 }} />
+            <Image source={focused ? iconUri : iconTintUri} style={{ width: 18, height: 18 }} />
         </View>
     );
 }
@@ -77,11 +83,14 @@ class BaseApp extends PureComponent {
     }
 
     handleConnectivityChange(isConnected) {
+        const { actions } = this.props;
         if (!isConnected) this.errorDialog.show()
+        actions.netConnection(isConnected)
     }
 
     render() {
         const { height, width } = Dimensions.get('window');
+        console.log('render App')
         return (
             <View
                 style={{
@@ -89,8 +98,8 @@ class BaseApp extends PureComponent {
                 }}
             >
                 <ConnectedRouter>
-                    <Scene key="root" hideNavBar="true">
-                        <Scene key="splash" component={() => <Splash />} initial />
+                    <Scene key="root" hideNavBar="true" >
+                        <Scene key="splash" component={() => <Splash />}  type='reset'/>
                         <Scene key="auth" hideNavBar="true">
                             <Scene
                                 key="signin"
@@ -125,6 +134,7 @@ class BaseApp extends PureComponent {
                             }}
                             showLabel={false}
                             tabBarPosition="bottom"
+                            animationEnabled={true}
                         >
                             <Scene
                                 key="merchantlist"
@@ -133,7 +143,7 @@ class BaseApp extends PureComponent {
                                 onBack={() => {
                                     Actions.refresh();
                                 }}
-                                renderTitle={<DeliveryButton location="" />}
+                                hideNavBar={true}
                                 iconUri={storeUri}
                                 iconTintUri={storeTintUri}
                                 icon={TabIcon}
@@ -142,7 +152,7 @@ class BaseApp extends PureComponent {
                                 key="categorylist"
                                 component={() => <CategoryListScreen />}
                                 title="Category"
-                                renderTitle={<DeliveryButton location="" />}
+                                hideNavBar={true}
                                 iconUri={categoryUri}
                                 iconTintUri={categoryTintUri}
                                 icon={TabIcon}
@@ -150,12 +160,31 @@ class BaseApp extends PureComponent {
                             <Scene
                                 key="userscreen"
                                 component={() => <UserScreen />}
-                                title="Forgot Password"
+                                title="Account"
                                 iconUri={userUri}
                                 iconTintUri={userTintUri}
                                 icon={TabIcon}
+                                hideNavBar={true}
+                            />
+                            <Scene
+                                key="notification"
+                                component={() => <NotificationsScreen />}
+                                title="Notification"
+                                iconUri={notifUri}
+                                iconTintUri={notifTintUri}
+                                icon={TabIcon}
                             />
                         </Tabs>
+                        <Scene 
+                        key="nearMe"
+                        component={()=><NearMeScreen />}
+                        title="Near Me"
+                        />
+                        <Scene
+                        key="details"
+                        component={MerchantDetailsScreen}
+                        title="Details"
+                        />
                     </Scene>
                 </ConnectedRouter>
                 <Dialog.ErrorDialog
@@ -177,4 +206,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     actions: bindActionCreators(InfoActions, dispatch),
 });
-export default BaseApp;
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(BaseApp)

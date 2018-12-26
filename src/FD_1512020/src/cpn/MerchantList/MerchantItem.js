@@ -5,7 +5,6 @@ import { Rating } from 'react-native-elements';
 const styles = StyleSheet.create({
   main: {
     height: 100,
-    backgroundColor: 'white',
     alignItems: 'center',
     flexDirection: 'row',
     padding: 10,

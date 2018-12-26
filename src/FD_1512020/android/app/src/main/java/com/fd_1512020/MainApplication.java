@@ -3,6 +3,11 @@ package com.fd_1512020;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.airbnb.android.react.maps.MapsPackage;
+import com.kishanjvaghela.cardview.RNCardViewPackage;
+import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.horcrux.svg.SvgPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -26,9 +31,13 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ReactNativePushNotificationPackage(),
+            new VectorIconsPackage(),
+            new MapsPackage(),
+            new RNCardViewPackage(),
+            new PickerPackage(),
             new LinearGradientPackage(),
-            new SvgPackage(),
-            new VectorIconsPackage()
+            new SvgPackage()
       );
     }
 

@@ -7,6 +7,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 30,
     justifyContent: 'center',
+    elevation: 3,
   },
   textStyle: {
     fontFamily: 'Montserrat',

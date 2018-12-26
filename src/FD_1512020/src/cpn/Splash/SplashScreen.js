@@ -1,8 +1,8 @@
 /*
  * @Author: An Nguyen 
  * @Date: 2018-11-05 01:02:47 
- * @Last Modified by:   An Nguyen 
- * @Last Modified time: 2018-11-05 01:02:47 
+ * @Last Modified by: An Nguyen
+ * @Last Modified time: 2018-12-02 16:10:53
  */
 import React, { PureComponent } from 'react';
 import {
@@ -17,8 +17,10 @@ import {
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Observable } from 'rxjs';
 
-import * as InfoActions from '../../feature/info/action';
+// import * as InfoActions from '../../feature/info/action';
+import * as InfoActions from '../../feature/signIn/action';
 
 const styles = StyleSheet.create({
   main: {
@@ -47,38 +49,40 @@ const styles = StyleSheet.create({
 class Spash extends PureComponent {
   componentDidMount() {
     const { actions } = this.props;
-    NetInfo.isConnected.fetch().then(isConnected => {
-      actions.netConnection(isConnected);
-    });
+    setTimeout(() => {
+      Actions.reset('main');
+    }, 300);
   }
 
   componentDidUpdate() {
     const { info } = this.props;
-    if (info.isConnected) {
-      AsyncStorage.getItem('@Token')
-        .then(value => {
-          console.log(value);
-          if (value !== null) {
-            setTimeout(() => {
-              Actions.reset('main');
-            }, 300);
-          } else {
-            setTimeout(() => {
-              Actions.reset('auth');
-            }, 300);
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          setTimeout(() => {
-            Actions.reset('auth');
-          }, 300);
-        });
-    }
+    Actions.reset('main');
+    // if (info.isConnected) {
+    //   AsyncStorage.getItem('@Token')
+    //     .then(value => {
+    //       console.log(value);
+    //       if (value !== null) {
+    //         setTimeout(() => {
+    //           Actions.reset('main');
+    //         }, 300);
+    //       } else {
+    //         setTimeout(() => {
+    //           Actions.reset('auth');
+    //         }, 300);
+    //       }
+    //     })
+    //     .catch(err => {
+    //       console.error(err);
+    //       setTimeout(() => {
+    //         Actions.reset('auth');
+    //       }, 300);
+    //     });
+    // }
   }
 
   render() {
     const { main, brand, brandWrapper } = styles;
+    console.log('render ');
     return (
       <ImageBackground
         source={require('../../assets/image/FD_background.jpg')}
@@ -100,6 +104,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(InfoActions, dispatch),
 });
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps

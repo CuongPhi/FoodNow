@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import { View, Text, FlatList, SectionList, StyleSheet } from 'react-native';
 import axios from 'axios';
 import * as Progress from 'react-native-progress';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import Color from '../../assets/color/color';
 import TagSelect from '../CommonCpn/TagSelect';
+import * as categoryAct from '../../feature/category/action';
 
 const styles = StyleSheet.create({
   title: {
@@ -27,51 +30,36 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class CategoryListScreen extends Component {
+class CategoryListScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: true,
-      categoriesData: [],
-      foodData: [],
-      listData: [],
+      listData: new Map(),
     };
     this.category = undefined;
     this.getFoodList = this.getFoodList.bind(this);
     this.removeFoodList = this.removeFoodList.bind(this);
+    this.type = '';
   }
 
   componentWillMount() {
-    axios({
-      url: `https://food-delivery-server.herokuapp.com/categories/getAll`,
-      method: 'get',
-    })
-      .then(res => {
-        if (res.status === 200) {
-          try {
-            this.setState(
-              {
-                categoriesData: res.data,
-                isLoading: false,
-              },
-              () => {
-                this.category.setSelect(res.data.length > 0 ? 1 : 0);
-              }
-            );
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    const { categoryAct: cAct } = this.props;
+    cAct.category();
+    this.type = 'getCategory';
+  }
+
+  componentDidUpdate() {
+    const { category: ctg } = this.props;
+    if (this.type === 'getCategory' && this.category) {
+      this.category.setSelect(ctg.category.length > 0 ? 0 : -1);
+      this.type = '';
+    }
   }
 
   getFoodList(item) {
     const { listData } = this.state;
     axios({
-      url: `http://food-delivery-server.herokuapp.com/food/searchtype?categoryname=${item}`,
+      url: `http://food-delivery-server.herokuapp.com/food/searchtype?categoryname=${item.name}`,
       method: 'get',
     })
       .then(res => {
@@ -81,11 +69,12 @@ export default class CategoryListScreen extends Component {
               name: item,
               data: res.data,
             };
-            const list = listData;
-            list.push(obj);
-            const foodData = _.flatten(_.map(list, 'data'));
-            console.log(foodData.length);
-            this.setState({ listData: list, foodData });
+            // let list = listData;
+            const list = new Map(listData);
+            list.set(item.id, res.data);
+            this.setState({ listData: list }, () => {
+              console.log(this.state);
+            });
           } catch (error) {
             console.log(error);
           }
@@ -98,16 +87,18 @@ export default class CategoryListScreen extends Component {
 
   removeFoodList(item) {
     const { listData } = this.state;
-    const list = listData;
-    const foodData = [];
-    _.remove(list, i => i.name === item);
-    listData.forEach(e => foodData.push(e.data));
-    this.setState({ listData: list, foodData });
+    // _.remove(list, i => i.name === item);
+    const list = new Map(listData);
+    list.delete(item.id);
+    // listData.forEach(e => foodData.push(e.data));
+    this.setState({ listData: list }, () => {
+      console.log(this.state);
+    });
   }
 
   renderLoading() {
-    const { isLoading } = this.state;
-    if (!isLoading) return null;
+    const { category } = this.props;
+    if (!category.loading) return null;
     return (
       <Progress.Bar
         width={null}
@@ -122,13 +113,13 @@ export default class CategoryListScreen extends Component {
   }
 
   renderTags() {
-    const { categoriesData } = this.state;
+    const { category } = this.props;
     return (
       <TagSelect
         ref={x => {
           this.category = x;
         }}
-        data={categoriesData}
+        data={_.get(category, 'category', [])}
         labelAttr="name"
         containerStyle={{
           padding: 10,
@@ -147,23 +138,23 @@ export default class CategoryListScreen extends Component {
         }}
         onItemPress={(item, isDelete) => {
           if (isDelete) {
-            this.removeFoodList(item.name);
+            this.removeFoodList(item);
             return;
           }
-          this.getFoodList(item.name);
+          this.getFoodList(item);
         }}
       />
     );
   }
 
   render() {
-    const { isLoading } = this.state;
+    const { category: caProps } = this.props;
     const { title, category, foods } = styles;
     return (
       <View>
         <View style={category}>
           <Text style={title}>Categories</Text>
-          {isLoading ? this.renderLoading() : this.renderTags()}
+          {caProps.loading ? this.renderLoading() : this.renderTags()}
         </View>
         <View style={foods}>
           <Text style={title}>Foods</Text>
@@ -172,3 +163,16 @@ export default class CategoryListScreen extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  category: state.category,
+});
+
+const mapDispatchToProps = dispacth => ({
+  categoryAct: bindActionCreators(categoryAct, dispacth),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CategoryListScreen);

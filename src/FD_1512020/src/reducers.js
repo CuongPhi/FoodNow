@@ -2,14 +2,32 @@
  * @Author: An Nguyen 
  * @Date: 2018-11-05 01:02:39 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2018-11-05 01:03:01
+ * @Last Modified time: 2018-12-26 22:28:26
  */
 import { combineReducers } from 'redux';
-import apiSignIn from './feature/apiSignIn/reducers';
 import info from './feature/info/reducer';
+import merchantlist from './feature/merchantlist/reducer';
+import userInfo from './feature/userinfo/reducer';
+import address from './feature/address/reducer';
+import signIn from './feature/signIn/reducer';
+import updateInfo from './feature/updateInfo/reducer';
+import updatePass from './feature/updatepass/reducer';
+import category from './feature/category/reducer';
+import nearMe from './feature/nearme/reducer';
+import notifs from './feature/notifations/reducer';
+import merchant from './feature/merchant/reducer';
 
 const rootReducers = combineReducers({
-  apiSignIn,
+  signIn,
   info,
+  merchantlist,
+  userInfo,
+  address,
+  updateInfo,
+  updatePass,
+  category,
+  nearMe,
+  notifs,
+  merchant,
 });
 export default rootReducers;

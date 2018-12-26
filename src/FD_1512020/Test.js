@@ -1,10 +1,45 @@
-// function isEmptyOrNull(text) {
-//   if(typeof text ==)
-//   return String(text).length === 0;
-// }
+// const { Observable, from, of, create } = require('rxjs');
 
-// console.log(isEmptyOrNull(undefined));
-// console.log(isEmptyOrNull(''));
-// console.log(isEmptyOrNull(2323));
-// console.log(isEmptyOrNull('3232323'));
-// console.log(isEmptyOrNull(true));
+// const o = of(30);
+// console.log(o);
+// const hello = Observable.create(observer => {
+//   observer.next('Hello');
+// });
+
+// hello.subscribe(val => console.log(val));
+// const testVal = {
+//   mot: {
+//     hai: {
+//       ba: 'a',
+//     },
+//   },
+// };
+
+// console.log(testVal.mot.ba.ba);
+
+const _ = require('lodash');
+
+const a = [
+  {
+    t: 1,
+    d: true,
+  },
+  {
+    t: 2,
+    d: true,
+  },
+];
+
+const b = [
+  {
+    t: 1,
+  },
+  {
+    t: 2,
+  },
+  {
+    t: 3,
+  },
+];
+
+console.log(_.unionBy(a, b, 't'));

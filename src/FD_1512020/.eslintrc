@@ -25,5 +25,8 @@
     "global-require": 0,
     "react/prop-types": 0
   },
-  "plugins": ["prettier"]
+  "plugins": ["prettier"],
+  "globals": {
+    "navigator": true
+  }
 }

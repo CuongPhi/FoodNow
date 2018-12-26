@@ -1,100 +1,136 @@
 import React, { Component } from 'react';
-import { View, FlatList, Dimensions, StatusBar } from 'react-native';
+import {
+  View,
+  FlatList,
+  Dimensions,
+  StatusBar,
+  RefreshControl,
+  Text,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import { Circle, Rect } from 'react-native-svg';
-import axios from 'axios';
 import * as Progress from 'react-native-progress';
-import { SearchBar } from 'react-native-elements';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Actions } from 'react-native-router-flux';
+import CardView from 'react-native-cardview';
+import SearchBar from 'react-native-material-design-searchbar';
 import ContentLoader from '../ContentLoader';
 import MerchantItem from './MerchantItem';
 import MerchantItemV2 from './MerchantItemV2';
 import Color from '../../assets/color/color';
 import CStyles from '../../assets/styles/styles';
+import * as merchantListActions from '../../feature/merchantlist/actions';
 
 const { height } = Dimensions.get('window');
-export default class MerchantListScreen extends Component {
+
+const HeaderItem = obj => (
+  <View style={{ flexDirection: 'row', paddingHorizontal: 10, paddingTop: 5 }}>
+    <View style={{ alignItems: 'center' }}>
+      <TouchableOpacity onPress={obj.onPress}>
+        <CardView
+          cardElevation={1}
+          cardMaxElevation={2}
+          cornerRadius={50}
+          style={{ height: 60, width: 60, justifyContent: 'center', alignItems: 'center' }}
+        >
+          <Image
+            source={obj.image}
+            style={{
+              width: 40,
+              height: 40,
+              resizeMode: 'contain',
+            }}
+          />
+        </CardView>
+      </TouchableOpacity>
+      <Text>{obj.name}</Text>
+    </View>
+  </View>
+);
+
+class MerchantListScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      itemList: [],
-      searchList: [],
       type: 1,
-      page: 1,
       onLayout: false,
-      loading: true,
-      loadmore: true,
       viewStyle: 2,
-      searchType: '',
-      timeCurrent: new Date().getTime(),
     };
     this.count = Math.floor(height / 100);
     this.getListItem = this.getListItem.bind(this);
+    this.refreshData = this.refreshData.bind(this);
     this.renderFooter = this.renderFooter.bind(this);
-    this.searchListItem = this.searchListItem.bind(this);
+    this.renderHeader = this.renderHeader.bind(this);
+    this.getListData = this.getListData.bind(this);
+    this.renderItem = this.renderItem.bind(this);
+  }
+
+  getHeaderList() {
+    const { viewStyle } = this.state;
+    return [
+      {
+        image: require('../../assets/image/checked.png'),
+        onPress: () => {
+          this.setState({
+            viewStyle: viewStyle === 1 ? 2 : 1,
+          });
+        },
+        name: 'View',
+      },
+      {
+        image: require('../../assets/image/cancel.png'),
+        onPress: () => {
+          Actions.nearMe();
+        },
+        name: 'Map',
+      },
+    ];
   }
 
   getListItem() {
-    const { itemList, page } = this.state;
-    axios({
-      url: `https://food-delivery-server.herokuapp.com/restaurant/getAll/${this.count}&${page}`,
-      method: 'get',
-    })
-      .then(res => {
-        if (res.status === 200) {
-          try {
-            const more = res.data.next_page > 0;
-            this.setState({
-              itemList: [...itemList, ...res.data.data],
-              page: page + 1,
-              loading: false,
-              loadmore: more,
-            });
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    const { actions } = this.props;
+    const { type } = this.state;
+    if (type !== 1) return;
+    actions.getAll(this.count);
   }
 
-  searchListItem() {
-    const { timeCurrent, searchType } = this.state;
-    const curr = new Date().getTime();
-    if (curr - timeCurrent > 1000) {
-      // food-delivery-server.herokuapp.com/restaurant/search?name=
-      this.setState(
-        {
-          timeCurrent: curr,
-        },
-        () => {
-          axios({
-            url: `https://food-delivery-server.herokuapp.com/restaurant/search?name=${searchType}`,
-            method: 'get',
-          })
-            .then(res => {
-              if (res.status === 200) {
-                try {
-                  console.log(res.data);
-                  this.setState({
-                    searchList: res.data,
-                  });
-                } catch (error) {
-                  console.log(error);
-                }
-              }
-            })
-            .catch(err => {
-              console.log(err);
-            });
-        }
+  getListData() {
+    const { type } = this.state;
+    const { merchantlist } = this.props;
+    return type === 1 ? merchantlist.itemList : merchantlist.searchList;
+  }
+
+  refreshData() {
+    const { actions } = this.props;
+    const { type } = this.state;
+    if (type !== 1) return;
+    actions.refresh();
+  }
+
+  renderItem(item) {
+    const { viewStyle, type } = this.state;
+    const data = type === 1 ? item.info : item;
+    const onPress = () => {
+      Actions.details({ item: data });
+    };
+    if (viewStyle === 1)
+      return (
+        <TouchableOpacity onPress={onPress}>
+          <MerchantItem item={data} />
+        </TouchableOpacity>
       );
-    }
+    return (
+      <TouchableOpacity onPress={onPress}>
+        <MerchantItemV2 item={data} />
+      </TouchableOpacity>
+    );
   }
 
   renderFooter() {
-    const { loading } = this.state;
-    if (!loading) return null;
+    const { merchantlist } = this.props;
+    if (!merchantlist.loading) return null;
     return (
       <Progress.Bar
         width={null}
@@ -107,96 +143,100 @@ export default class MerchantListScreen extends Component {
     );
   }
 
+  renderHeader() {
+    return (
+      <FlatList
+        data={this.getHeaderList()}
+        renderItem={({ item }) => HeaderItem(item)}
+        keyExtractor={(item, index) => index.toString()}
+        horizontal
+      />
+    );
+  }
+
+  renderList(payments) {
+    const { onLayout } = this.state;
+    const { merchantlist } = this.props;
+    return (
+      <FlatList
+        onLayout={event => {
+          if (!onLayout) {
+            this.count = Math.floor(event.nativeEvent.layout.height / 100);
+            this.setState(
+              {
+                onLayout: true,
+              },
+              () => {
+                this.getListItem();
+              }
+            );
+          }
+        }}
+        refreshControl={
+          <RefreshControl refreshing={merchantlist.loading} onRefresh={this.refreshData} />
+        }
+        data={this.getListData()}
+        renderItem={({ item }) => this.renderItem(item)}
+        keyExtractor={(item, index) => index.toString()}
+        style={{ backgroundColor: 'white' }}
+        ListEmptyComponent={
+          <View
+            style={{
+              paddingTop: 30,
+            }}
+          >
+            {payments}
+          </View>
+        }
+        initialNumToRender={this.count}
+        ListFooterComponent={this.renderFooter}
+        ListHeaderComponent={this.renderHeader}
+        onEndReachedThreshold={0.5}
+        onEndReached={() => {
+          this.getListItem();
+        }}
+      />
+    );
+  }
+
   render() {
     const { main } = CStyles;
-    const {
-      itemList,
-      onLayout,
-      loadmore,
-      viewStyle,
-      searchType,
-      type,
-      searchList,
-      loading,
-    } = this.state;
+    const { merchantlist, actions } = this.props;
     const payments = [];
 
     for (let i = 0; i < this.count; i += 1) {
       payments.push(<Loader key={i} />);
     }
     return (
-      <View style={[main, { backgroundColor: '#383D42' }]}>
+      <View style={[main, { backgroundColor: Color.AColor.main }]}>
         <StatusBar backgroundColor={Color.AColor.main} barStyle="light-content" />
         <SearchBar
-          lightTheme
-          placeholder="Type Here..."
-          onChangeText={text => {
-            if (loading) return;
+          placeholder="Find your restaurant..."
+          onSearchChange={text => {
             const v = text.length > 0 ? 2 : 1;
             this.setState(
               {
-                searchType: text,
                 type: v,
               },
-              () => this.searchListItem()
+              () => {
+                actions.search(text);
+              }
             );
           }}
-          noIcon
-          clearIcon={null}
-          value={searchType}
+          autoCorrect={false}
+          padding={5}
+          value={merchantlist.query}
+          height={40}
+          iconColor="white"
+          inputStyle={{
+            borderColor: 'white',
+            borderRadius: 5,
+          }}
+          textStyle={{
+            color: 'white',
+          }}
         />
-        <View style={{ flex: 9 }}>
-          <FlatList
-            onLayout={event => {
-              if (!onLayout) {
-                this.count = Math.floor(event.nativeEvent.layout.height / 100);
-                this.setState(
-                  {
-                    onLayout: true,
-                  },
-                  () => {
-                    this.getListItem();
-                  }
-                );
-              }
-            }}
-            data={type === 1 ? itemList : searchList}
-            renderItem={({ item }) =>
-              viewStyle === 1 ? (
-                <MerchantItem item={type === 1 ? item.info : item} />
-              ) : (
-                <MerchantItemV2 item={type === 1 ? item.info : item} />
-              )
-            }
-            keyExtractor={(item, index) => index.toString()}
-            style={{ backgroundColor: '#E1E8EE' }}
-            ListEmptyComponent={
-              <View
-                style={{
-                  paddingTop: 30,
-                }}
-              >
-                {payments}
-              </View>
-            }
-            initialNumToRender={this.count}
-            ListFooterComponent={this.renderFooter}
-            onEndReachedThreshold={0.5}
-            onEndReached={() => {
-              setTimeout(() => {
-                if (!loadmore) {
-                  return;
-                }
-                this.setState(
-                  {
-                    loading: true,
-                  },
-                  this.getListItem()
-                );
-              }, 300);
-            }}
-          />
-        </View>
+        <View style={{ flex: 9 }}>{this.renderList(payments)}</View>
       </View>
     );
   }
@@ -209,3 +249,16 @@ const Loader = () => (
     <Rect x="100" y="37" rx="4" ry="4" width="50" height="8" />
   </ContentLoader>
 );
+
+const mapStateToProps = state => ({
+  merchantlist: state.merchantlist,
+});
+
+const mapDispatchToProps = dispacth => ({
+  actions: bindActionCreators(merchantListActions, dispacth),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MerchantListScreen);

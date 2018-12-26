@@ -2,7 +2,7 @@
  * @Author: An Nguyen 
  * @Date: 2018-11-04 14:57:19 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2018-11-05 01:36:40
+ * @Last Modified time: 2018-12-17 23:45:29
  */
 import React, { PureComponent } from 'react';
 import { View, TouchableOpacity, StyleSheet, Text, Keyboard } from 'react-native';
@@ -12,10 +12,8 @@ import { bindActionCreators } from 'redux';
 import CustomInput from '../../CommonCpn/CustomInput';
 import CustomButton from '../../CommonCpn/CustomButton';
 import * as StringUtils from '../../../ultilies/StringUtils';
-import * as Utils from '../../../ultilies/Utils';
 import * as Dialog from '../../Modal/Dialog';
-import * as ApiActions from '../../../feature/apiSignIn/action';
-import * as types from '../../../feature/apiSignIn/type';
+import * as ApiActions from '../../../feature/signIn/action';
 
 const styles = StyleSheet.create({
   main: {
@@ -50,18 +48,16 @@ class SignIn extends PureComponent {
 
   componentDidUpdate() {
     const { apiSignIn } = this.props;
-    if (apiSignIn.type !== types.SIGN_IN) return;
     if (apiSignIn.loading) {
       this.button.disable();
     } else {
       this.button.enable();
     }
-    if (apiSignIn.error) {
-      this.errorDialog.setMessage(`${apiSignIn.error.data.msg} (HTTP:${apiSignIn.error.status})`);
-      this.errorDialog.show();
-    }
-    if (apiSignIn.data && apiSignIn.isSuccess) {
-      Utils.storeItem('@Token', apiSignIn.data.token).catch(err => console.log(err));
+    // if (apiSignIn.error) {
+    //   this.errorDialog.setMessage(`${apiSignIn.error.data.msg} (HTTP:${apiSignIn.error.status})`);
+    //   this.errorDialog.show();
+    // }
+    if (apiSignIn.login) {
       Actions.main();
     }
   }
@@ -165,7 +161,7 @@ class SignIn extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-  apiSignIn: state.apiSignIn,
+  apiSignIn: state.signIn,
 });
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(ApiActions, dispatch),

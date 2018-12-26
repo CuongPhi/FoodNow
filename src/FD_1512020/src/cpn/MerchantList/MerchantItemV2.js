@@ -2,12 +2,13 @@
  * @Author: An Nguyen 
  * @Date: 2018-10-21 00:31:34 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2018-10-21 03:32:33
+ * @Last Modified time: 2018-12-23 08:33:11
  */
-import React, { Component } from 'react';
-import { View, Text, StyleSheet, ImageBackground } from 'react-native';
+import React from 'react';
+import { Text, StyleSheet, ImageBackground } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import StarRating from 'react-native-star-rating';
+import Fade from '../CommonCpn/Fade';
 
 const styles = StyleSheet.create({
   main: {
@@ -21,16 +22,11 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class MerchantItemV2 extends Component {
-  constructor(props) {
-    super(props);
-    this.item = props.item;
-  }
-
-  render() {
-    const { item } = this;
-    const { main } = styles;
-    return (
+const MerchantItemV2 = props => {
+  const { item } = props;
+  const { main } = styles;
+  return (
+    <Fade duration={2000}>
       <ImageBackground source={{ uri: item.image }} style={main}>
         <LinearGradient
           colors={['rgba(255,255,255,0)', 'rgba(0,0,0,1)']}
@@ -74,6 +70,8 @@ export default class MerchantItemV2 extends Component {
           />
         </LinearGradient>
       </ImageBackground>
-    );
-  }
-}
+    </Fade>
+  );
+};
+
+export default MerchantItemV2;
