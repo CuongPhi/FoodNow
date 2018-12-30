@@ -2,7 +2,7 @@
  * @Author: An Nguyen 
  * @Date: 2018-12-16 17:32:03 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2018-12-26 22:02:06
+ * @Last Modified time: 2018-12-30 16:26:11
  */
 const SIGN_IN = 'SIGN_IN';
 const SIGN_UP = 'SIGN_UP';
@@ -22,6 +22,9 @@ const CATEGORY = 'CATEGORY';
 const NEARME = 'NEARME';
 const MERCHANT = 'MERCHANT';
 const NOTIFICATION = 'NOTIFICATION';
+const LOAD_COMMENT = 'LOAD_COMMENT';
+const LOAD_ALL_COMMENT = 'LOAD_ALL_COMMENT';
+const POST_COMMENT = 'POST_COMMENT';
 
 const type = name => ({
   TYPE: name,
@@ -47,6 +50,9 @@ export const restaurantRefresh = 'RES_REFRESH';
 export const nearMe = type(NEARME);
 export const notif = type(NOTIFICATION);
 export const merchant = type(MERCHANT);
+export const loadCmt = type(LOAD_COMMENT);
+export const loadAllCmt = type(LOAD_ALL_COMMENT);
+export const postCmt = type(POST_COMMENT);
 export const changeInfo = {
   USERNAME: 'changeInfoUSERNAME',
   EMAIL: 'changeInfoEMAIL',

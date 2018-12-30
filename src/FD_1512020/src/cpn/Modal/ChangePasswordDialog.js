@@ -16,6 +16,7 @@ export default class ChangePasswordDialog extends PureComponent {
     this.hidecallback = undefined;
     this.handleShowPass = this.handleShowPass.bind(this);
     this.handleText = this.handleText.bind(this);
+    this.exit = this.exit.bind(this);
   }
 
   show(callback) {
@@ -33,6 +34,12 @@ export default class ChangePasswordDialog extends PureComponent {
     if (this.hidecallback) {
       this.hidecallback(text);
     }
+  }
+
+  exit() {
+    this.setState({
+      isShow: false,
+    });
   }
 
   handleShowPass() {
@@ -53,7 +60,8 @@ export default class ChangePasswordDialog extends PureComponent {
     return (
       <Modal
         isVisible={isShow}
-        onBackdropPress={this.hide}
+        onBackdropPress={this.exit}
+        onBackButtonPress={this.exit}
         animationIn="zoomInDown"
         animationOut="zoomOutUp"
       >

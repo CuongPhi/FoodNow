@@ -27,6 +27,7 @@ const PColor = {
   chigong: a=> parseColor("#d63031",a),
   mint_leaf: a=>parseColor("#00b894",a),
   first_date: a=>parseColor('#fab1a0',a),
+  american_driver: a=>parseColor("#636e72",a),
   pink_glamour: a=>parseColor('#ff7675',a)
 };
 

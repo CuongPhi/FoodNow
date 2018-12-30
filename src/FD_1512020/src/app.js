@@ -2,12 +2,12 @@
  * @Author: An Nguyen 
  * @Date: 2018-11-04 18:11:35 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2018-12-25 00:44:53
+ * @Last Modified time: 2018-12-30 16:57:08
  */
 /*eslint-disable*/
 import React, { PureComponent } from 'react';
 import { Dimensions, Text, Image, View, NetInfo } from 'react-native';
-import { Router, Scene, Stack, ActionConst, Actions, Tabs, Animations } from 'react-native-router-flux';
+import { Router, Scene, Stack, ActionConst, Actions, Tabs, Animations, Modal } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -20,7 +20,8 @@ import UserScreen from './cpn/UserScreen/UserScreen';
 import NearMeScreen from './cpn/NearMe/NearMeScreen';
 import NotificationsScreen from './cpn/NotificationsScreen/NotificationsScreen';
 import MerchantDetailsScreen from './cpn/Merchant/MerchantDetailsScreen';
-import {ajax} from 'rxjs/ajax';
+import MerchantProfileScreen from './cpn/Merchant/MerchantProfileScreen';
+import MerchantComments from './cpn/Merchant/MerchantComments';
 
 import * as InfoActions from './feature/info/action';
 import * as Dialog from './cpn/Modal/Dialog';
@@ -98,7 +99,7 @@ class BaseApp extends PureComponent {
                 }}
             >
                 <ConnectedRouter>
-                    <Scene key="root" hideNavBar="true" >
+                    <Scene key="root" hideNavBar="true" animationEnabled={true}>
                         <Scene key="splash" component={() => <Splash />}  type='reset'/>
                         <Scene key="auth" hideNavBar="true">
                             <Scene
@@ -135,6 +136,7 @@ class BaseApp extends PureComponent {
                             showLabel={false}
                             tabBarPosition="bottom"
                             animationEnabled={true}
+                            lazy={false}
                         >
                             <Scene
                                 key="merchantlist"
@@ -184,6 +186,21 @@ class BaseApp extends PureComponent {
                         key="details"
                         component={MerchantDetailsScreen}
                         title="Details"
+                        />
+                        <Scene 
+                        key="profile"
+                        component={MerchantProfileScreen}
+                        title="Profile"
+                        hideNavBar={true}
+                        modal={true}
+                        />
+                        <Scene 
+                        key="comments"
+                        component={MerchantComments}
+                        title="Comments"
+                        modal={true}
+                        headerMode="float"
+                        hideNavBar={false}
                         />
                     </Scene>
                 </ConnectedRouter>

@@ -227,13 +227,14 @@ class MerchantListScreen extends Component {
           padding={5}
           value={merchantlist.query}
           height={40}
-          iconColor="white"
+          iconColor="#737373"
           inputStyle={{
             borderColor: 'white',
             borderRadius: 5,
+            backgroundColor: 'white',
           }}
           textStyle={{
-            color: 'white',
+            color: '#bdbdbd',
           }}
         />
         <View style={{ flex: 9 }}>{this.renderList(payments)}</View>

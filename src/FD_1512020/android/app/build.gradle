@@ -149,6 +149,13 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-youtube')
+    compile project(':react-native-vector-icons')
+    compile project(':react-native-svg')
+    compile project(':react-native-maps')
+    compile project(':react-native-linear-gradient')
+    compile project(':react-native-image-crop-picker')
+    compile project(':react-native-cardview')
     compile project(':react-native-push-notification')
     implementation project(':react-native-maps')
     implementation project(':react-native-cardview')

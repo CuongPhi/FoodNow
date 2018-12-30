@@ -43,7 +43,7 @@ class UserScreen extends PureComponent {
   handleChangePassDialog() {
     const { actions: ac } = this.props;
     this.updateDialog.show(text => {
-      ac.updatePass(text);
+      if (text.length > 0) ac.updatePass(text);
     });
   }
 

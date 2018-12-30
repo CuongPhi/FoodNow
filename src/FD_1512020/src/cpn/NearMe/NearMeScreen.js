@@ -2,7 +2,7 @@
  * @Author: An Nguyen 
  * @Date: 2018-12-23 08:20:42 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2018-12-23 08:32:07
+ * @Last Modified time: 2018-12-30 17:31:48
  */
 import React, { PureComponent } from 'react';
 import {
@@ -100,7 +100,11 @@ const scrollItem = value => {
   const feeShip = _.get(value, 'RESTAURANT.feeShip', '');
   const image = _.get(value, 'RESTAURANT.image', '');
   return (
-    <View style={styles.card} key={value.id}>
+    <TouchableOpacity
+      style={styles.card}
+      key={value.id}
+      onPress={() => Actions.details({ item: value })}
+    >
       <View>
         <Text
           numberOfLines={1}
@@ -128,7 +132,7 @@ const scrollItem = value => {
           }}
         />
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 class NearMeScreen extends PureComponent {

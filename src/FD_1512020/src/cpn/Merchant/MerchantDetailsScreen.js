@@ -1,15 +1,5 @@
 import React, { PureComponent } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ImageBackground,
-  SectionList,
-  StatusBar,
-  Animated,
-  FlatList,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, FlatList, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Badge, Header } from 'react-native-elements';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
@@ -106,11 +96,13 @@ class MerchantDetailsScreen extends PureComponent {
     this.handleScrollEvent = this.handleScrollEvent.bind(this);
     this.renderStickyHeader = this.renderStickyHeader.bind(this);
     this.renderForeground = this.renderForeground.bind(this);
+    this.handlePressProfile = this.handlePressProfile.bind(this);
   }
 
   componentDidMount() {
     const { merchantActions: acts, item } = this.props;
     acts.get(_.get(item, 'id', ''));
+    console.log(_.get(item, 'id', ''));
   }
 
   handleScrollEvent(e) {
@@ -123,6 +115,11 @@ class MerchantDetailsScreen extends PureComponent {
         header: HEADER_HEIGHT,
       });
     }
+  }
+
+  handlePressProfile() {
+    const { merchant } = this.props;
+    Actions.profile({ item: _.get(merchant, 'data'), cmts: _.get(merchant, 'firstCmt', []) });
   }
 
   renderStickyHeader() {
@@ -161,11 +158,7 @@ class MerchantDetailsScreen extends PureComponent {
         <View style={brandLayout}>
           <Text style={textBrand}>{_.get(restaurant, 'name', 'Empty Name')}</Text>
           <Text style={textAddr}>{_.get(address, 'address', '')}</Text>
-          <TouchableOpacity
-            onPress={() => {
-              console.log('Profile');
-            }}
-          >
+          <TouchableOpacity onPress={this.handlePressProfile}>
             <Text style={profile}>See restaurant profile</Text>
           </TouchableOpacity>
         </View>
@@ -178,6 +171,7 @@ class MerchantDetailsScreen extends PureComponent {
     const { header } = this.state;
     const { merchant } = this.props;
     const menu = _.get(merchant, 'data.menu', []);
+    console.log(merchant);
     return (
       <ParallaxScrollView
         backgroundColor={Color.AColor.main}
@@ -202,73 +196,6 @@ class MerchantDetailsScreen extends PureComponent {
       </ParallaxScrollView>
     );
   }
-
-  // render() {
-  //   const {
-  //     DetailLayoutContainer,
-  //     DeatailLayout,
-  //     snackbar,
-  //     textBrand,
-  //     textAddr,
-  //     brandLayout,
-  //   } = style;
-  //   return (
-  //     <View style={CStyles.main}>
-  //       <View style={DetailLayoutContainer}>
-  //         <View style={[CStyles.shadowBox, DeatailLayout]}>
-  //           <ImageBackground
-  //             source={{
-  //               uri:
-  //                 'https://vuakhuyenmai.vn/wp-content/uploads/2017/11/britea-english-tea-house-sale-16-11-2017.jpg',
-  //             }}
-  //             style={{ flex: 1, justifyContent: 'flex-end' }}
-  //             imageStyle={{ borderTopLeftRadius: 2, borderTopRightRadius: 2 }}
-  //           >
-  //             <View style={brandLayout}>
-  //               <Text style={textBrand}>Britea - English Tea House - Ngô Đức Kế</Text>
-  //               <Text style={textAddr}>60 Ngô Đức Kế, P. Bến Nghé, Quận 1, TP. HCM</Text>
-  //             </View>
-  //           </ImageBackground>
-  //           <View style={{ flex: 4, zIndex: 0 }}>
-  //             <SectionList
-  //               sections={this.data}
-  //               renderItem={({ item }) => <DishItem item={item} />}
-  //               renderSectionHeader={({ section: { title } }) => (
-  //                 <Text style={{ fontWeight: 'bold', paddingLeft: 10 }}>{title}</Text>
-  //               )}
-  //               keyExtractor={(item, index) => index.toString()}
-  //               nestedScrollEnabled
-  //               contentContainerStyle={{ paddingBottom: 50 }}
-  //             />
-  //           </View>
-  //         </View>
-  //       </View>
-  //       <View style={snackbar}>
-  //         <Icon
-  //           name="shopping-basket"
-  //           size={20}
-  //           color={Color.PColor.electron_blue(0.9)}
-  //           style={{
-  //             textAlignVertical: 'center',
-  //           }}
-  //         />
-  //         <Badge
-  //           containerStyle={{ backgroundColor: Color.PColor.electron_blue(0.9), marginLeft: 10 }}
-  //           textStyle={{ color: 'orange' }}
-  //           value={2}
-  //         />
-  //         <Text
-  //           style={{
-  //             color: Color.PColor.electron_blue(0.9),
-  //             paddingLeft: 10,
-  //           }}
-  //         >
-  //           72.000 đ
-  //         </Text>
-  //       </View>
-  //     </View>
-  //   );
-  // }
 }
 
 const mapStateToProps = state => ({
