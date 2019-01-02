@@ -2,7 +2,7 @@
  * @Author: An Nguyen 
  * @Date: 2018-12-23 18:32:29 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2018-12-24 22:52:55
+ * @Last Modified time: 2018-12-30 19:31:16
  */
 import _ from 'lodash';
 import * as types from '../type';
@@ -17,7 +17,6 @@ const initialState = {
 };
 
 export default function notifs(prevState = initialState, action) {
-  console.log(action);
   switch (action.type) {
     case types.notif.TYPE:
       return { ...prevState, loading: true };

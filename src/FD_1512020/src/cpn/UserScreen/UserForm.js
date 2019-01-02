@@ -2,7 +2,7 @@
  * @Author: An Nguyen 
  * @Date: 2018-12-15 18:32:55 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2018-12-23 18:04:25
+ * @Last Modified time: 2019-01-01 23:43:00
  */
 import React, { PureComponent } from 'react';
 import { View, StyleSheet, RefreshControl } from 'react-native';
@@ -168,7 +168,7 @@ class UserForm extends PureComponent {
   handleDistrict(value) {
     const { userInfoActions, addActions } = this.props;
     userInfoActions.changeText(value, types.changeInfo.DISTRICT);
-    addActions.getWard(value);
+    addActions.getWard(value, false);
   }
 
   handleWard(value) {
@@ -333,7 +333,7 @@ class UserForm extends PureComponent {
             <View style={infoctn}>
               <Input
                 placeholder="Enter your address"
-                leftIcon={{ type: 'font-awesome', name: 'phone' }}
+                leftIcon={{ type: 'font-awesome', name: 'location-arrow' }}
                 containerStyle={input}
                 inputStyle={inputctn}
                 onChangeText={this.handleStreet}

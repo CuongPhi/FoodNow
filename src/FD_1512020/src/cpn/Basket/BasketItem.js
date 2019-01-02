@@ -1,6 +1,10 @@
 import React, { PureComponent } from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import _ from 'lodash';
+import { Divider } from 'react-native-elements';
 import CStyles from '../../assets/styles/styles';
+import NumberPicker from '../CommonCpn/NumberPicker';
+import * as utils from '../../ultilies/Utils';
 
 const styles = StyleSheet.create({
   textName: {
@@ -20,10 +24,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class MerchantItem extends PureComponent {
+export default class BasketItem extends PureComponent {
   render() {
     const { textName, textTag } = styles;
-    const { item } = this.props;
+    const { item, count, onUpdate, onRemove } = this.props;
+    const price = _.get(item, 'price', 0);
+    const name = _.get(item, 'name', '');
     return (
       <View>
         <View
@@ -36,20 +42,9 @@ export default class MerchantItem extends PureComponent {
             },
           ]}
         >
-          <Image
-            source={{ uri: item.source }}
-            style={[
-              CStyles.listItemThumbnail,
-              {
-                width: 'auto',
-                height: '100%',
-                minHeight: 80,
-              },
-            ]}
-          />
           <View style={[CStyles.listItem2ndLayout, { justifyContent: 'center' }]}>
-            <Text style={textName}>{item.name}</Text>
-            <Text style={[textTag]}>{item.price}</Text>
+            <Text style={textName}>{name}</Text>
+            <Text style={[textTag]}>{utils.vndFormat(price)}</Text>
           </View>
           <View
             style={[
@@ -69,50 +64,13 @@ export default class MerchantItem extends PureComponent {
                 },
               ]}
             >
-              {item.price}
+              {`${utils.vndFormat(price * count)}`}
             </Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignContent: 'center',
-              }}
-            >
-              <TempButton icon="-" color="red" />
-              <Text
-                style={{
-                  color: 'black',
-                  fontSize: 16,
-                  textAlignVertical: 'center',
-                }}
-              >
-                1
-              </Text>
-              <TempButton icon="+" color="blue" />
-            </View>
+            <NumberPicker value={count} onUpdate={onUpdate} onRemove={onRemove} />
           </View>
         </View>
+        <Divider />
       </View>
     );
   }
 }
-/* eslint-disable */
-const TempButton = props => (
-  <View
-    style={{
-      height: 20,
-      width: 20,
-      backgroundColor: props.color,
-      borderRadius: 50,
-      justifyContent: 'center',
-      alignContent: 'center',
-      margin: 5,
-    }}
-  >
-    <Text
-      style={{ textAlign: 'center', textAlignVertical: 'center', color: 'white', fontSize: 15 }}
-    >
-      {props.icon}
-    </Text>
-  </View>
-);

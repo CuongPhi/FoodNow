@@ -2,7 +2,7 @@
  * @Author: An Nguyen 
  * @Date: 2018-11-04 14:57:19 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2018-12-17 23:45:29
+ * @Last Modified time: 2018-12-30 19:20:20
  */
 import React, { PureComponent } from 'react';
 import { View, TouchableOpacity, StyleSheet, Text, Keyboard } from 'react-native';
@@ -58,7 +58,7 @@ class SignIn extends PureComponent {
     //   this.errorDialog.show();
     // }
     if (apiSignIn.login) {
-      Actions.main();
+      Actions.replace('main');
     }
   }
 

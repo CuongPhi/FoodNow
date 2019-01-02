@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { Button, Divider } from 'react-native-elements';
+import _ from 'lodash';
 import CStyles from '../../assets/styles/styles';
 import Color from '../../assets/color/color';
+import * as utils from '../../ultilies/Utils';
 
 const styles = StyleSheet.create({
   textName: {
@@ -22,17 +24,11 @@ const styles = StyleSheet.create({
   },
 });
 
-// 12-26 22:57:13.248 18215 24868 I ReactNativeJS:         { id: 1306,
-// 12-26 22:57:13.248 18215 24868 I ReactNativeJS:           name: 'Pizza Hải sản cao cấp (Size nhỏ)',
-// 12-26 22:57:13.248 18215 24868 I ReactNativeJS:           idFoodCategory: 6,
-// 12-26 22:57:13.248 18215 24868 I ReactNativeJS:           idRestaurant: 13,
-// 12-26 22:57:13.248 18215 24868 I ReactNativeJS:           image: 'http://a9.vietbao.vn/images/vn899/120/2018/04/20180419-huong-vi-bien-ca-trong-pizza-vien-tom-nuong-hai-san-cao-cap-1.jpg',
-// 12-26 22:57:13.248 18215 24868 I ReactNativeJS:           price: 265000,
-// 12-26 22:57:13.248 18215 24868 I ReactNativeJS:           sold: 130 }
 export default class DishItem extends PureComponent {
   render() {
     const { textName, textDes, textTag } = styles;
-    const { item } = this.props;
+    const { item, onSelect } = this.props;
+    const price = _.get(item, 'price', '');
     return (
       <View>
         <View
@@ -59,7 +55,7 @@ export default class DishItem extends PureComponent {
           <View style={CStyles.listItem2ndLayout}>
             <Text style={textName}>{item.name}</Text>
             <Text style={textDes}>{item.sold}</Text>
-            <Text style={textTag}>{item.price}</Text>
+            <Text style={textTag}>{utils.vndFormat(price)}</Text>
           </View>
           <View
             style={[
@@ -69,7 +65,7 @@ export default class DishItem extends PureComponent {
               },
             ]}
           >
-            <Button title="+" style={{ alignSelf: 'center' }} />
+            <Button title="+" style={{ alignSelf: 'center' }} onPress={onSelect} />
           </View>
         </View>
         <Divider

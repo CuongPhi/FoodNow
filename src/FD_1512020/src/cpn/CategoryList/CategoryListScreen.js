@@ -72,9 +72,7 @@ class CategoryListScreen extends Component {
             // let list = listData;
             const list = new Map(listData);
             list.set(item.id, res.data);
-            this.setState({ listData: list }, () => {
-              console.log(this.state);
-            });
+            this.setState({ listData: list });
           } catch (error) {
             console.log(error);
           }

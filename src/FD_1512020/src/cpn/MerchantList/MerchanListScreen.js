@@ -16,6 +16,7 @@ import { bindActionCreators } from 'redux';
 import { Actions } from 'react-native-router-flux';
 import CardView from 'react-native-cardview';
 import SearchBar from 'react-native-material-design-searchbar';
+import Permissions from 'react-native-permissions';
 import ContentLoader from '../ContentLoader';
 import MerchantItem from './MerchantItem';
 import MerchantItemV2 from './MerchantItemV2';
@@ -38,8 +39,8 @@ const HeaderItem = obj => (
           <Image
             source={obj.image}
             style={{
-              width: 40,
-              height: 40,
+              width: 30,
+              height: 30,
               resizeMode: 'contain',
             }}
           />
@@ -49,6 +50,18 @@ const HeaderItem = obj => (
     </View>
   </View>
 );
+
+async function handleNearMe() {
+  const granted = await Permissions.check('location');
+  if (granted === 'authorized') {
+    Actions.nearMe();
+  } else {
+    const r = await Permissions.request('location');
+    if (r === 'authorized') {
+      Actions.nearMe();
+    }
+  }
+}
 
 class MerchantListScreen extends Component {
   constructor(props) {
@@ -71,20 +84,23 @@ class MerchantListScreen extends Component {
     const { viewStyle } = this.state;
     return [
       {
-        image: require('../../assets/image/checked.png'),
+        image: require('../../assets/image/list-button.png'),
         onPress: () => {
           this.setState({
             viewStyle: viewStyle === 1 ? 2 : 1,
           });
         },
-        name: 'View',
+        name: 'Change View',
       },
       {
-        image: require('../../assets/image/cancel.png'),
-        onPress: () => {
-          Actions.nearMe();
-        },
-        name: 'Map',
+        image: require('../../assets/image/placeholder.png'),
+        onPress: () => handleNearMe(),
+        name: 'Near Me',
+      },
+      {
+        image: require('../../assets/image/order_history.png'),
+        onPress: () => handleNearMe(),
+        name: 'Near Me',
       },
     ];
   }

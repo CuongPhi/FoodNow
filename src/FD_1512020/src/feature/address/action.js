@@ -2,7 +2,7 @@
  * @Author: An Nguyen 
  * @Date: 2018-12-17 01:28:23 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2018-12-17 01:40:08
+ * @Last Modified time: 2019-01-01 23:41:16
  */
 import * as type from '../type';
 
@@ -20,9 +20,10 @@ export const getDistrictFail = err => ({
   err,
 });
 
-export const getWard = id => ({
+export const getWard = (id, getFromState) => ({
   type: type.ward.TYPE,
   id,
+  getFromState,
 });
 
 export const getWardSuccess = res => ({

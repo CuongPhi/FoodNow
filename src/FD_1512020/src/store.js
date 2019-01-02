@@ -1,7 +1,6 @@
 import { applyMiddleware, createStore } from 'redux';
 import { createEpicMiddleware } from 'redux-observable';
-import { persistStore, persistReducer } from 'redux-persist';
-import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
+import { persistStore, persistReducer, createTransform } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 import rootEpic from './epic';
@@ -12,10 +11,20 @@ import rootReducers from './reducers';
 //   baseURL: 'https://food-delivery-server.herokuapp.com',
 //   responseType: 'json',
 // });
+
+// The transformer
+const mapTransformer = config =>
+  createTransform(
+    map => JSON.stringify(Array.from(map)),
+    arrayString => new Map(JSON.parse(arrayString)),
+    config
+  );
+
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['signIn', 'notifs'],
+  whitelist: ['signIn', 'notifs', 'order'],
+  transforms: [mapTransformer({ whitelist: 'order.data' })],
 };
 
 const epicMiddleware = createEpicMiddleware();

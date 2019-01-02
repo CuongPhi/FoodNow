@@ -85,7 +85,6 @@ class TagSelect extends React.Component {
     const value = { ...this.state.value }
     const found = this.props.data[key]
     value[key+1] = found
-    console.log(found)
     this.setState({ value },() => {
       if (this.props.onItemPress) {
         this.props.onItemPress(found,false)

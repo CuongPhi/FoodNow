@@ -72,7 +72,6 @@ class PhotoGrid extends PureComponent {
 
     const secondViewWidth = direction === 'column' ? width : (width * ratio)
     const secondViewHeight = direction === 'column' ? (height * ratio) : height
-    console.log(this.props.source)
     return source.length ? (
       <View style={[{ flexDirection: direction, width, height }, this.props.styles]}>
         <View style={{ flex: 1, flexDirection: direction === 'row' ? 'column' : 'row' }}>

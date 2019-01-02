@@ -2,7 +2,7 @@
  * @Author: An Nguyen 
  * @Date: 2018-12-23 08:20:42 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2018-12-30 17:31:48
+ * @Last Modified time: 2018-12-30 19:24:28
  */
 import React, { PureComponent } from 'react';
 import {
@@ -208,6 +208,7 @@ class NearMeScreen extends PureComponent {
           }}
           initialRegion={init}
           style={mapView}
+          showsMyLocationButton={false}
           showsUserLocation
           onRegionChangeComplete={value => {
             this.setState({ region: value });

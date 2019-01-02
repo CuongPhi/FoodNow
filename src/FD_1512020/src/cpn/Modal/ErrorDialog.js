@@ -20,7 +20,6 @@ export default class ErrorDialog extends Component {
   }
 
   show(callback) {
-    console.log('show');
     this.setState({
       isShow: true,
     });

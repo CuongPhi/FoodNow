@@ -10,6 +10,7 @@ import getNearMeEpic from './feature/nearme/epic';
 import loadNotifEpic from './feature/notifations/epic';
 import getMerchantEpic from './feature/merchant/epic';
 import { getAllCmtEpic, sendCmtEpic } from './feature/comments/epic';
+import postOrderEpic from './feature/order/epic';
 
 export default combineEpics(
   getAllMerchantEpic,
@@ -27,5 +28,6 @@ export default combineEpics(
   loadNotifEpic,
   getMerchantEpic,
   getAllCmtEpic,
-  sendCmtEpic
+  sendCmtEpic,
+  postOrderEpic
 );

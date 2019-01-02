@@ -2,22 +2,13 @@
  * @Author: An Nguyen 
  * @Date: 2018-11-05 01:02:47 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2018-12-02 16:10:53
+ * @Last Modified time: 2018-12-30 22:12:47
  */
 import React, { PureComponent } from 'react';
-import {
-  View,
-  ImageBackground,
-  StyleSheet,
-  Image,
-  AsyncStorage,
-  StatusBar,
-  NetInfo,
-} from 'react-native';
+import { View, ImageBackground, StyleSheet, Image, StatusBar } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Observable } from 'rxjs';
 
 // import * as InfoActions from '../../feature/info/action';
 import * as InfoActions from '../../feature/signIn/action';
@@ -48,41 +39,17 @@ const styles = StyleSheet.create({
 });
 class Spash extends PureComponent {
   componentDidMount() {
-    const { actions } = this.props;
     setTimeout(() => {
       Actions.reset('main');
     }, 300);
   }
 
   componentDidUpdate() {
-    const { info } = this.props;
     Actions.reset('main');
-    // if (info.isConnected) {
-    //   AsyncStorage.getItem('@Token')
-    //     .then(value => {
-    //       console.log(value);
-    //       if (value !== null) {
-    //         setTimeout(() => {
-    //           Actions.reset('main');
-    //         }, 300);
-    //       } else {
-    //         setTimeout(() => {
-    //           Actions.reset('auth');
-    //         }, 300);
-    //       }
-    //     })
-    //     .catch(err => {
-    //       console.error(err);
-    //       setTimeout(() => {
-    //         Actions.reset('auth');
-    //       }, 300);
-    //     });
-    // }
   }
 
   render() {
     const { main, brand, brandWrapper } = styles;
-    console.log('render ');
     return (
       <ImageBackground
         source={require('../../assets/image/FD_background.jpg')}

@@ -2,7 +2,7 @@
  * @Author: An Nguyen 
  * @Date: 2018-11-04 18:11:35 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2018-12-30 16:57:08
+ * @Last Modified time: 2019-01-01 22:39:44
  */
 /*eslint-disable*/
 import React, { PureComponent } from 'react';
@@ -10,6 +10,7 @@ import { Dimensions, Text, Image, View, NetInfo } from 'react-native';
 import { Router, Scene, Stack, ActionConst, Actions, Tabs, Animations, Modal } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import LoginScreen from './cpn/LoginScreen/LoginScreen';
 import MerchanListScreen from './cpn/MerchantList/MerchanListScreen';
@@ -22,6 +23,7 @@ import NotificationsScreen from './cpn/NotificationsScreen/NotificationsScreen';
 import MerchantDetailsScreen from './cpn/Merchant/MerchantDetailsScreen';
 import MerchantProfileScreen from './cpn/Merchant/MerchantProfileScreen';
 import MerchantComments from './cpn/Merchant/MerchantComments';
+import OrderScreen from './cpn/OrderScreen/OrderScreen';
 
 import * as InfoActions from './feature/info/action';
 import * as Dialog from './cpn/Modal/Dialog';
@@ -91,7 +93,6 @@ class BaseApp extends PureComponent {
 
     render() {
         const { height, width } = Dimensions.get('window');
-        console.log('render App')
         return (
             <View
                 style={{
@@ -201,6 +202,19 @@ class BaseApp extends PureComponent {
                         modal={true}
                         headerMode="float"
                         hideNavBar={false}
+                        />
+                        <Scene 
+                        key="order"
+                        component={OrderScreen}
+                        title="Basket"
+                        hideNavBar={false}
+                        navigationBarStyle={{
+                            backgroundColor: Color.AColor.main,
+                        }}
+                        titleStyle={{
+                            color:'white'
+                        }}
+                        navBarButtonColor='white'
                         />
                     </Scene>
                 </ConnectedRouter>
