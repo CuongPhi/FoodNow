@@ -7,8 +7,7 @@ import CustomInput from '../../CommonCpn/CustomInput';
 import CustomButton from '../../CommonCpn/CustomButton';
 import * as StringUtils from '../../../ultilies/StringUtils';
 import * as Dialog from '../../Modal/Dialog';
-import * as ApiActions from '../../../feature/apiSignIn/action';
-import * as types from '../../../feature/apiSignIn/type';
+import * as ApiActions from '../../../feature/signIn/action';
 
 const styles = StyleSheet.create({
   main: {
@@ -45,18 +44,17 @@ class SignUp extends PureComponent {
   }
 
   componentDidUpdate() {
-    const { apiSignIn } = this.props;
-    if (apiSignIn.type !== types.SIGN_UP) return;
-    if (apiSignIn.loading) {
+    const { signUp } = this.props;
+    if (signUp.loading) {
       this.button.disable();
-    } else {
-      this.button.enable();
+      return;
     }
-    if (apiSignIn.error) {
-      this.errorDialog.setMessage(`${apiSignIn.error.data.msg} (HTTP:${apiSignIn.error.status})`);
+    this.button.enable();
+    console.log(signUp);
+    if (signUp.err) {
+      this.errorDialog.setMessage(`${signUp.msg}`);
       this.errorDialog.show();
-    }
-    if (apiSignIn.data && apiSignIn.isSuccess) {
+    } else {
       this.succesDialog.show(() => {
         this.button.enable();
       });
@@ -191,7 +189,7 @@ class SignUp extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-  apiSignIn: state.apiSignIn,
+  signUp: state.signUp,
 });
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(ApiActions, dispatch),

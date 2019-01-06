@@ -2,7 +2,7 @@ import { combineEpics } from 'redux-observable';
 import { getAllMerchantEpic, searchMerchantEpic, refreshAll } from './feature/merchantlist/epic';
 import getUserInfo from './feature/userinfo/epic';
 import { getDistrict, getWard } from './feature/address/epic';
-import signInEpic from './feature/signIn/epic';
+import { signInEpic, forgotPassEpic, signUpEpic } from './feature/signIn/epic';
 import { updateInfoEpic, updateAvatar } from './feature/updateInfo/epic';
 import updatePassword from './feature/updatepass/epic';
 import { categoryEpic, getFoodCategory } from './feature/category/epic';
@@ -18,6 +18,7 @@ export default combineEpics(
   searchMerchantEpic,
   getUserInfo,
   signInEpic,
+  forgotPassEpic,
   getDistrict,
   getWard,
   updateInfoEpic,
@@ -33,5 +34,6 @@ export default combineEpics(
   postOrderEpic,
   orderHistoryEpic,
   orderDetail,
-  getFoodCategory
+  getFoodCategory,
+  signUpEpic
 );

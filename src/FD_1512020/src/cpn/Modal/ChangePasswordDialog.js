@@ -30,6 +30,7 @@ export default class ChangePasswordDialog extends PureComponent {
     const { text } = this.state;
     this.setState({
       isShow: false,
+      text: '',
     });
     if (this.hidecallback) {
       this.hidecallback(text);
@@ -139,15 +140,3 @@ export default class ChangePasswordDialog extends PureComponent {
     );
   }
 }
-
-// const mapStateToProps = state => ({
-//   updatePass: state.updatePass,
-// });
-
-// const mapDispatchToProps = dispacth => ({
-//   actions: bindActionCreators(actions, dispacth),
-// });
-// export default connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(ChangePasswordDialog);

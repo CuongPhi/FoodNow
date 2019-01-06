@@ -2,10 +2,10 @@
  * @Author: An Nguyen 
  * @Date: 2018-11-23 01:10:31 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2018-12-20 00:44:19
+ * @Last Modified time: 2019-01-06 19:53:19
  */
+import _ from 'lodash';
 import * as types from '../type';
-import * as utils from '../../ultilies/Utils';
 
 const initialState = {
   loading: false,
@@ -17,10 +17,9 @@ export default function signIn(prevState = initialState, action) {
     case types.signIn.TYPE:
       return { loading: true };
     case types.signIn.SUCCESS: {
-      const data = utils.getSafe(action.data.response);
       return {
         loading: false,
-        token: utils.getSafe(data.token),
+        token: _.get(action, 'data.response.token', ''),
         login: true,
       };
     }

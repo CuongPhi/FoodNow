@@ -6,8 +6,7 @@ import { bindActionCreators } from 'redux';
 import CustomInput from '../../CommonCpn/CustomInput';
 import CustomButton from '../../CommonCpn/CustomButton';
 import * as StringUtils from '../../../ultilies/StringUtils';
-import * as ApiActions from '../../../feature/apiSignIn/action';
-import * as types from '../../../feature/apiSignIn/type';
+import * as ApiActions from '../../../feature/signIn/action';
 import * as Dialog from '../../Modal/Dialog';
 
 const styles = StyleSheet.create({
@@ -44,19 +43,18 @@ class ForgotPassword extends PureComponent {
   }
 
   componentDidUpdate() {
-    const { apiSignIn } = this.props;
-    if (apiSignIn.type !== types.FORGOT_PASSWORD) return;
-    if (apiSignIn.loading) {
+    const { password } = this.props;
+    if (password.loading) {
       this.button.disable();
-    } else {
-      this.button.enable();
+      return;
     }
-    if (apiSignIn.error) {
-      this.errorDialog.setMessage(`${apiSignIn.error.data.msg} (HTTP:${apiSignIn.error.status})`);
+    this.button.enable();
+
+    if (password.err) {
+      this.errorDialog.setMessage(`${password.msg}`);
       this.errorDialog.show();
-    }
-    if (apiSignIn.data && apiSignIn.isSuccess) {
-      this.succesDialog.setMessage(apiSignIn.data.msg);
+    } else {
+      this.succesDialog.setMessage('Successful');
       this.succesDialog.show(() => {
         Actions.signin();
       });
@@ -133,7 +131,7 @@ class ForgotPassword extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-  apiSignIn: state.apiSignIn,
+  password: state.password,
 });
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(ApiActions, dispatch),

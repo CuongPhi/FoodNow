@@ -2,7 +2,7 @@
  * @Author: An Nguyen 
  * @Date: 2018-12-02 16:14:53 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2019-01-06 17:39:12
+ * @Last Modified time: 2019-01-06 20:09:41
  */
 export const client = 'https://food-delivery-server.herokuapp.com/';
 export const restaurantGetAll = (count, page) => `${client}restaurant/getAll/${count}&${page}`;
@@ -29,3 +29,5 @@ export const postOrder = `${client}order/create`;
 export const orderHistory = `${client}order/getAll`;
 export const orderDetails = id => `${client}order/getOrder/${id}`;
 export const getFood = name => `${client}food/searchtype?categoryname=${name}`;
+export const forgotPassword = `${client}forgetPassword`;
+export const signUp = `${client}register`;

@@ -2,7 +2,7 @@
  * @Author: An Nguyen 
  * @Date: 2018-11-04 14:57:19 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2018-12-30 19:20:20
+ * @Last Modified time: 2019-01-06 19:21:24
  */
 import React, { PureComponent } from 'react';
 import { View, TouchableOpacity, StyleSheet, Text, Keyboard } from 'react-native';
@@ -53,10 +53,6 @@ class SignIn extends PureComponent {
     } else {
       this.button.enable();
     }
-    // if (apiSignIn.error) {
-    //   this.errorDialog.setMessage(`${apiSignIn.error.data.msg} (HTTP:${apiSignIn.error.status})`);
-    //   this.errorDialog.show();
-    // }
     if (apiSignIn.login) {
       Actions.replace('main');
     }

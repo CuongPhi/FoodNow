@@ -27,6 +27,7 @@
   },
   "plugins": ["prettier"],
   "globals": {
-    "navigator": true
+    "navigator": true,
+    "FormData": true
   }
 }
