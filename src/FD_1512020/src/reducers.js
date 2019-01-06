@@ -2,7 +2,7 @@
  * @Author: An Nguyen 
  * @Date: 2018-11-05 01:02:39 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2018-12-31 16:49:54
+ * @Last Modified time: 2019-01-02 22:15:21
  */
 import { combineReducers } from 'redux';
 import info from './feature/info/reducer';
@@ -18,6 +18,7 @@ import notifs from './feature/notifations/reducer';
 import merchant from './feature/merchant/reducer';
 import comments from './feature/comments/reducer';
 import order from './feature/order/reducer';
+import orderHistory from './feature/orderHistory/reducer';
 
 const rootReducers = combineReducers({
   signIn,
@@ -33,5 +34,6 @@ const rootReducers = combineReducers({
   merchant,
   comments,
   order,
+  orderHistory,
 });
 export default rootReducers;

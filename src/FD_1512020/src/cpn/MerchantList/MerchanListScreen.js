@@ -99,8 +99,8 @@ class MerchantListScreen extends Component {
       },
       {
         image: require('../../assets/image/order_history.png'),
-        onPress: () => handleNearMe(),
-        name: 'Near Me',
+        onPress: () => Actions.orderHistory(),
+        name: 'Order History',
       },
     ];
   }

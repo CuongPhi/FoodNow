@@ -45,8 +45,6 @@ function TagSelectItem(props) {
             styles.inner,
             styles[`${props.theme}Inner`],
             props.itemStyle,
-            props.selected && styles[`${props.theme}InnerSelected`],
-            props.selected && props.itemStyleSelected,
           ]}
         >
           <Text
@@ -54,8 +52,6 @@ function TagSelectItem(props) {
             style={[
               styles[`${props.theme}LabelText`],
               props.itemLabelStyle,
-              props.selected && styles[`${props.theme}LabelTextSelected`],
-              props.selected && props.itemLabelStyleSelected,
             ]}
           >
             {props.label}

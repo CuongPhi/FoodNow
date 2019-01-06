@@ -39,7 +39,7 @@
 //   sold: 54,
 // };
 
-// const _ = require('lodash');
+const _ = require('lodash');
 
 // let list = [
 //   {
@@ -66,6 +66,24 @@
 // // }
 // list = _.slice(list, index, 1);
 // console.log(list);
-let x = 1000;
-x = x.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
-console.log(x);
+// let x = 1000;
+// x = x.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+// console.log(x);
+const { performance } = require('perf_hooks');
+
+const item = { testItem: { item: { item2: 'haha' } } };
+const t0 = performance.now();
+for (let i = 0; i < 100000; ++i) {
+  const testItem = item.testItem || {};
+  const ia = testItem.item || {};
+  const a = ia.item2 || {};
+  const a = 
+}
+const t1 = performance.now();
+const t2 = performance.now();
+for (let i = 0; i < 100000; ++i) {
+  const a = _.get(item, 'testItem.item.item2', {});
+}
+const t3 = performance.now();
+console.log(`Call to doSomething took ${t1 - t0} milliseconds.`);
+console.log(`Call to doSomething took ${t3 - t2} milliseconds.`);

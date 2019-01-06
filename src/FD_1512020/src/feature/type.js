@@ -2,7 +2,7 @@
  * @Author: An Nguyen 
  * @Date: 2018-12-16 17:32:03 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2019-01-02 02:34:41
+ * @Last Modified time: 2019-01-06 18:33:00
  */
 const SIGN_IN = 'SIGN_IN';
 const SIGN_UP = 'SIGN_UP';
@@ -26,9 +26,12 @@ const LOAD_COMMENT = 'LOAD_COMMENT';
 const LOAD_ALL_COMMENT = 'LOAD_ALL_COMMENT';
 const POST_COMMENT = 'POST_COMMENT';
 const POST_ORDER = 'POST_ORDER';
+const ORDER_HISTORY = 'ORDER_HISTORY';
+const ORDER_DETAIL = 'ORDER_DETAIL';
+const GET_FOOD = 'GET_FOOD';
 export const PUSH_ITEM_LIST = 'PUSH_ITEM_LIST';
 export const REMOVE_ITEM_LIST = 'REMOVE_ITEM_LIST';
-
+export const REMOVE_CATE = 'REMOVE_CATE';
 const type = name => ({
   TYPE: name,
   SUCCESS: name + S,
@@ -57,6 +60,9 @@ export const loadCmt = type(LOAD_COMMENT);
 export const loadAllCmt = type(LOAD_ALL_COMMENT);
 export const postCmt = type(POST_COMMENT);
 export const postOrder = type(POST_ORDER);
+export const orderHistory = type(ORDER_HISTORY);
+export const orderDetail = type(ORDER_DETAIL);
+export const getFood = type(GET_FOOD);
 export const changeInfo = {
   USERNAME: 'changeInfoUSERNAME',
   EMAIL: 'changeInfoEMAIL',

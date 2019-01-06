@@ -2,7 +2,7 @@
  * @Author: An Nguyen 
  * @Date: 2018-11-04 18:11:35 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2019-01-01 22:39:44
+ * @Last Modified time: 2019-01-02 22:18:45
  */
 /*eslint-disable*/
 import React, { PureComponent } from 'react';
@@ -24,6 +24,7 @@ import MerchantDetailsScreen from './cpn/Merchant/MerchantDetailsScreen';
 import MerchantProfileScreen from './cpn/Merchant/MerchantProfileScreen';
 import MerchantComments from './cpn/Merchant/MerchantComments';
 import OrderScreen from './cpn/OrderScreen/OrderScreen';
+import OrderHistory from './cpn/OrderScreen/OrderHistory';
 
 import * as InfoActions from './feature/info/action';
 import * as Dialog from './cpn/Modal/Dialog';
@@ -207,6 +208,19 @@ class BaseApp extends PureComponent {
                         key="order"
                         component={OrderScreen}
                         title="Basket"
+                        hideNavBar={false}
+                        navigationBarStyle={{
+                            backgroundColor: Color.AColor.main,
+                        }}
+                        titleStyle={{
+                            color:'white'
+                        }}
+                        navBarButtonColor='white'
+                        />
+                        <Scene 
+                        key="orderHistory"
+                        component={OrderHistory}
+                        title="Order History"
                         hideNavBar={false}
                         navigationBarStyle={{
                             backgroundColor: Color.AColor.main,

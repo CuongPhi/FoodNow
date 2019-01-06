@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, SectionList, StyleSheet } from 'react-native';
-import axios from 'axios';
+import { View, Text, FlatList, StyleSheet, ScrollView } from 'react-native';
 import * as Progress from 'react-native-progress';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
+import { Dropdown } from 'react-native-material-dropdown';
+import CardView from 'react-native-cardview';
+import { Actions } from 'react-native-router-flux';
 import Color from '../../assets/color/color';
 import TagSelect from '../CommonCpn/TagSelect';
 import * as categoryAct from '../../feature/category/action';
+import DishItem from '../Merchant/DishItem';
+import Fade from '../CommonCpn/Fade';
 
 const styles = StyleSheet.create({
   title: {
     fontSize: 20,
-    paddingHorizontal: 10,
-    paddingTop: 10,
   },
   category: {
     backgroundColor: 'white',
@@ -21,6 +23,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
     marginTop: 10,
+    padding: 20,
+    flex: 1,
   },
   foods: {
     backgroundColor: 'white',
@@ -34,11 +38,11 @@ class CategoryListScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      listData: new Map(),
+      selectedCat: undefined,
+      setCat: new Set(),
     };
     this.category = undefined;
-    this.getFoodList = this.getFoodList.bind(this);
-    this.removeFoodList = this.removeFoodList.bind(this);
+    this.handleSelectedCat = this.handleSelectedCat.bind(this);
     this.type = '';
   }
 
@@ -56,41 +60,29 @@ class CategoryListScreen extends Component {
     }
   }
 
-  getFoodList(item) {
-    const { listData } = this.state;
-    axios({
-      url: `http://food-delivery-server.herokuapp.com/food/searchtype?categoryname=${item.name}`,
-      method: 'get',
-    })
-      .then(res => {
-        if (res.status === 200) {
-          try {
-            const obj = {
-              name: item,
-              data: res.data,
-            };
-            // let list = listData;
-            const list = new Map(listData);
-            list.set(item.id, res.data);
-            this.setState({ listData: list });
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+  handleSelectedCat(value) {
+    const { category, categoryAct: cAct } = this.props;
+    const { setCat } = this.state;
+    const catList = _.get(category, 'category', []);
+    const item = _.find(catList, o => o.id === value);
+    setCat.add(item);
+    cAct.getFood(item);
+    this.setState({
+      selectedCat: value,
+      setCat,
+    });
   }
 
-  removeFoodList(item) {
-    const { listData } = this.state;
-    // _.remove(list, i => i.name === item);
-    const list = new Map(listData);
-    list.delete(item.id);
-    // listData.forEach(e => foodData.push(e.data));
-    this.setState({ listData: list }, () => {
-      console.log(this.state);
+  handleRemoveCat(value) {
+    const { category, categoryAct: cAct } = this.props;
+    const { setCat } = this.state;
+    const catList = _.get(category, 'category', []);
+    const item = _.find(catList, o => o.id === value);
+    setCat.delete(item);
+    cAct.removeCat(item);
+    this.setState({
+      selectedCat: value,
+      setCat,
     });
   }
 
@@ -111,13 +103,13 @@ class CategoryListScreen extends Component {
   }
 
   renderTags() {
-    const { category } = this.props;
+    const { setCat } = this.state;
     return (
       <TagSelect
         ref={x => {
           this.category = x;
         }}
-        data={_.get(category, 'category', [])}
+        data={[...setCat]}
         labelAttr="name"
         containerStyle={{
           padding: 10,
@@ -134,12 +126,8 @@ class CategoryListScreen extends Component {
           backgroundColor: Color.AColor.main,
           borderWidth: 0,
         }}
-        onItemPress={(item, isDelete) => {
-          if (isDelete) {
-            this.removeFoodList(item);
-            return;
-          }
-          this.getFoodList(item);
+        onItemPress={item => {
+          this.handleRemoveCat(_.get(item, 'id', ''));
         }}
       />
     );
@@ -147,17 +135,50 @@ class CategoryListScreen extends Component {
 
   render() {
     const { category: caProps } = this.props;
+    const { selectedCat } = this.state;
     const { title, category, foods } = styles;
+    const catList = _.get(caProps, 'category', []);
+    const foodList = _.get(caProps, 'foodList', []);
     return (
-      <View>
-        <View style={category}>
-          <Text style={title}>Categories</Text>
+      <ScrollView>
+        <CardView style={category} cardElevation={1} cardMaxElevation={2}>
+          <View style={{ flexDirection: 'row', flex: 1 }}>
+            <Text style={[title, { flex: 2, textAlignVertical: 'center' }]}>Categories</Text>
+            <Dropdown
+              data={catList}
+              labelExtractor={({ name }) => name}
+              value={selectedCat}
+              valueExtractor={({ id }) => id}
+              onChangeText={this.handleSelectedCat}
+              containerStyle={{ flex: 1 }}
+            />
+          </View>
+
           {caProps.loading ? this.renderLoading() : this.renderTags()}
-        </View>
-        <View style={foods}>
-          <Text style={title}>Foods</Text>
-        </View>
-      </View>
+        </CardView>
+        {foodList.length > 0 ? (
+          <Fade>
+            <CardView style={[foods]} cardElevation={1} cardMaxElevation={2}>
+              <Text style={[title, { padding: 20 }]}>Foods</Text>
+              <FlatList
+                data={foodList}
+                renderItem={({ item }) => (
+                  <Fade>
+                    <DishItem
+                      item={item}
+                      onSelect={() => {
+                        const o = { id: _.get(item, 'idRestaurant', '') };
+                        Actions.details({ item: o });
+                      }}
+                    />
+                  </Fade>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+              />
+            </CardView>
+          </Fade>
+        ) : null}
+      </ScrollView>
     );
   }
 }
