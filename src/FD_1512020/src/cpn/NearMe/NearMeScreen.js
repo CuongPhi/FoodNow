@@ -2,7 +2,7 @@
  * @Author: An Nguyen 
  * @Date: 2018-12-23 08:20:42 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2018-12-30 19:24:28
+ * @Last Modified time: 2019-01-07 00:18:49
  */
 import React, { PureComponent } from 'react';
 import {
@@ -30,7 +30,6 @@ const CARD_HEIGHT = height * 0.25;
 const CARD_WIDTH = width * 0.8;
 
 const gps = require('../../assets/image/placeholder.png');
-const food = require('../../assets/image/food_place.png');
 
 const styles = StyleSheet.create({
   loadingMain: {
@@ -231,7 +230,6 @@ class NearMeScreen extends PureComponent {
             <Marker
               coordinate={{ latitude: value.latitude, longitude: value.longitude }}
               key={value.id}
-              image={food}
               onPress={() => this.handlerMarkerPress(value)}
               title={_.get(value, 'RESTAURANT.name', '')}
             />

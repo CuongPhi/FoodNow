@@ -2,7 +2,7 @@
  * @Author: An Nguyen 
  * @Date: 2019-01-01 21:53:46 
  * @Last Modified by: An Nguyen
- * @Last Modified time: 2019-01-02 20:23:04
+ * @Last Modified time: 2019-01-07 01:17:06
  */
 import React, { PureComponent } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Keyboard } from 'react-native';
@@ -92,7 +92,7 @@ class OrderScreen extends PureComponent {
     super(props);
     this.state = {
       changeAdd: false,
-      displayBtn: true,
+      displayBtn: false,
       address: '',
       note: '',
     };
@@ -100,8 +100,8 @@ class OrderScreen extends PureComponent {
     this.handleChangeAddress = this.handleChangeAddress.bind(this);
     this.handleRemoveAddress = this.handleRemoveAddress.bind(this);
     this.renderFooter = this.renderFooter.bind(this);
-    this.handleHideButton = this.handleHideButton.bind(this);
-    this.handleShowButton = this.handleRemoveAddress.bind(this);
+    this.keyboardDidHide = this.keyboardDidHide.bind(this);
+    this.keyboardDidShow = this.keyboardDidShow.bind(this);
     this.action = '';
   }
 
@@ -111,10 +111,16 @@ class OrderScreen extends PureComponent {
     if (address === undefined) {
       userinfoActs.getUserInfo();
     }
-    this.keyboardDidShow = this.keyboardDidShow.bind(this);
-    this.keyboardDidHide = this.keyboardDidHide.bind(this);
     this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
+    this.setState(
+      {
+        displayBtn: true,
+      },
+      () => {
+        if (this.orderButton) this.orderButton.bounceInUp(500);
+      }
+    );
   }
 
   componentDidUpdate() {
@@ -178,10 +184,8 @@ class OrderScreen extends PureComponent {
   }
 
   keyboardDidShow() {
-    this.handleHideButton();
-  }
-
-  handleHideButton() {
+    const { displayBtn } = this.state;
+    if (!displayBtn) return;
     if (this.orderButton)
       this.orderButton.bounceOutRight(500).then(endState => {
         if (endState.finished) {
@@ -193,10 +197,8 @@ class OrderScreen extends PureComponent {
   }
 
   keyboardDidHide() {
-    this.handleShowButton();
-  }
-
-  handleShowButton() {
+    const { displayBtn } = this.state;
+    if (displayBtn) return;
     this.setState(
       {
         displayBtn: true,
@@ -219,7 +221,7 @@ class OrderScreen extends PureComponent {
         changeAdd: !changeAdd,
       },
       () => {
-        this.rChangeAddress.bounceInLeft(500);
+        if (this.rAddress) this.rChangeAddress.bounceInLeft(500);
       }
     );
   }
@@ -231,7 +233,7 @@ class OrderScreen extends PureComponent {
         changeAdd: !changeAdd,
       },
       () => {
-        this.rAddress.bounceInRight(500);
+        if (this.rAddress) this.rAddress.bounceInRight(500);
       }
     );
   }
@@ -393,8 +395,8 @@ class OrderScreen extends PureComponent {
               this.orderButton = x;
             }}
             style={button}
-            animation="bounceInUp"
-            delay={300}
+            // animation="bounceInUp"
+            // delay={300}
           >
             <CustomButton
               text="Place Order"
